@@ -33,11 +33,22 @@ def save(db,kind,obj,sid):
 def authority(ctx):
     ctx.check_actor()
     if ctx.actor.get('sid')!=ctx.sid or ctx.actor.get('role')!='creator': fail('forbidden','Creator access required.',403)
-def refs_current(sid,refs):
+def refs_current(sid,refs,*,allow_source=False):
     if not isinstance(refs,list) or not refs or len(refs)>20: fail('invalid_request','Select one or more source moments.',422)
     for ref in refs:
         if not isinstance(ref,dict) or ref.get('sessionId')!=sid: fail('stale_context','Source unavailable.')
-        waves16_continuation.valid_ref(ref)
+        if allow_source and set(ref)=={'sessionId','sourceId','sourceRevision'}:
+            # Whole-source replacement citations carry no moment or alignment.
+            from .phase10_common import parse_source_ref
+            from .http import expired
+            ref=parse_source_ref(ref)
+            waves16_continuation.active_session(sid)
+            source=store.get('source',ref['sourceId'],sid)
+            if (not source or source.get('status')!='active' or expired(source)
+                    or not source.get('audienceVisible') or source.get('_revision')!=ref['sourceRevision']):
+                fail('stale_context','Source unavailable.')
+        else:
+            waves16_continuation.valid_ref(ref)
 def signals_current(sid,signals):
     if not isinstance(signals,list) or len(signals)>20: fail('invalid_request','Invalid selections.',422)
     seen=set()
@@ -77,7 +88,7 @@ def guard_delivery(sid,material):
         live=store.get('p10material',material.get('id'),sid)
         segment=store.get(SEG,b.get('segmentId'),sid)
         if live!=material or not segment or segment.get('materialId')!=material.get('id') or segment.get('binding')!=b or material.get('refs')!=b.get('refs'): fail('stale_context','Segment material unavailable.')
-        refs_current(sid,b['refs']); signals_current(sid,b['signals'])
+        refs_current(sid,b['refs'],allow_source=True); signals_current(sid,b['signals'])
         for dep in b.get('formats',[]):
             fmt=store.get(waves15_formats.F,dep['id'],sid)
             if not fmt or fmt['_revision']!=dep['revision']: fail('stale_context','Participation changed.')
@@ -120,7 +131,7 @@ def prepare_bound_replacement(ctx, db, material, object_revision, segment_revisi
     # A cue binds the old material version and can have independent native state.
     if s.get('cueId'):
         fail('operation_unresolved','The segment has an existing cue.')
-    refs_current(ctx.sid,refs)
+    refs_current(ctx.sid,refs,allow_source=True)
     phase10_studio.resolve_material_refs(ctx,refs)
     signals_current(ctx.sid,binding.get('signals'))
     for dep in binding.get('formats',[]):
@@ -161,7 +172,7 @@ def presentation_configuration(sid,actor):
 def project(ctx,s):
     out=dict(s); out.pop('binding',None)
     try:
-        if s.get('refs'): refs_current(ctx.sid,s['refs']); signals_current(ctx.sid,s['signals'])
+        if s.get('refs'): refs_current(ctx.sid,s['refs'],allow_source=True); signals_current(ctx.sid,s['signals'])
         m=store.get('p10material',s.get('materialId'),ctx.sid) if s.get('materialId') else None
         if m: guard_material(ctx,m)
         out['material']=phase10_studio._summary(ctx,m,True) if m else None

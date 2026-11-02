@@ -99,6 +99,7 @@ export function mountCoeditAccess(root, {identity, assertIdentity, assertReadIde
     const journal = createProtectedCoeditJournal({scope:{sessionId:captured.sessionId,actorId:captured.actorBinding,role:captured.role === 'creator' ? 'creator' : 'collaborator',draftId:id,token:captured.token},isCurrent:() => { try { check(); return true; } catch (_) { return false; } }});
     protectedJournal = journal;
     if (!journal.available()) throw Error('Encrypted recovery unavailable');
+    const conflict = {value:null};
     const locked = async fn => { check(); if (!navigator.locks) throw Error('Recovery lock unavailable'); const key = await journalKey(id,captured); check(); return navigator.locks.request('protected:'+key,async () => { check(); return fn(); }); };
     const recoverOriginal = async expected => locked(async () => {
       const saved = await journal.loadMetadata(); check();
@@ -106,18 +107,31 @@ export function mountCoeditAccess(root, {identity, assertIdentity, assertReadIde
       const lookup = saved.kind === 'adopt' ? readAdoptionOperation : readOperation;
       if (typeof lookup !== 'function') throw Error('Receipt lookup unavailable');
       const receipt = await lookup(id,saved.requestId,captured); check();
+      if (saved.kind === 'patch' && receipt?.operation?.state === 'conflict') {
+        const projection = await read(id,captured); check();
+        if (!projection?.draft || projection.draft.draftId !== id) throw Error('Current draft unavailable');
+        const pending = await journal.readConfirmed(saved,receipt); check();
+        conflict.value = {meta:saved,receipt};
+        return {resolved:true,conflicted:true,proposal:pending.body.operations,projection};
+      }
       // Only the current rights-aware server receipt can clear ciphertext.
       // Missing/pending/unknown receipts never trigger a mutation or a new ID.
       await journal.clearConfirmed(saved,receipt); check();
-      return {resolved:true,adopted:saved.kind === 'adopt',withdrawn:saved.kind === 'withdraw',projection:receipt.draft ? {draft:receipt.draft} : null};
+      return {resolved:true,adopted:saved.kind === 'adopt',withdrawn:saved.kind === 'withdraw',committedPatch:saved.kind === 'patch',projection:receipt.draft ? {draft:receipt.draft} : null};
     });
-    return {journal,check,locked,recoverOriginal};
+    const discardConflict = () => locked(async () => {
+      if (!conflict.value) return;
+      const {meta} = conflict.value, receipt = await readOperation(id,meta.requestId,captured); check();
+      await journal.clearConfirmed(meta,receipt); check(); conflict.value = null;
+    });
+    return {journal,check,locked,recoverOriginal,conflict,discardConflict};
   }
   async function recoverProtected(id,captured,epoch) {
     status.textContent = 'Checking the original protected receipt…';
     try {
       const context = protectedContext(id,captured,epoch);
       const result = await context.recoverOriginal(); context.check();
+      if (result.conflicted) { await openProtected(id,captured,epoch); return; }
       status.textContent = result.adopted ? 'The prior adoption was confirmed. Review and approve the material separately in Studio.' : result.withdrawn ? 'The prior withdrawal was confirmed.' : 'The prior operation was confirmed. Open the current draft to review it.';
     } catch (_) { if (generation === epoch) status.textContent = 'The prior operation remains unconfirmed or unavailable. Its encrypted recovery record was retained; nothing was resent.'; }
   }
@@ -141,14 +155,18 @@ export function mountCoeditAccess(root, {identity, assertIdentity, assertReadIde
             if (projection.capabilities?.adoptionRecovery !== 1 || captured.role !== 'creator') throw Error('Adoption recovery unavailable');
             meta = {...meta,materialId:binding.materialId,baseMaterialVersion:binding.baseMaterialVersion};
           }
-          await context.journal.savePending(meta,payload); context.check();
+          await context.journal.savePending(meta,payload,context.conflict.value); context.check(); context.conflict.value = null;
         },
         complete:async (expected,receipt) => {
           context.check(); const meta = await context.journal.loadMetadata(); context.check();
           if (!meta || meta.requestId !== expected.requestId) throw Error('Recovery record changed');
+          // Direct PATCH responses omit the action discriminator. Confirm via
+          // the actor-bound original receipt rather than inventing that field.
+          if (meta.kind === 'patch') { receipt = await readOperation(id,meta.requestId,captured); context.check(); }
+          if (meta.kind === 'patch' && receipt?.operation?.state === 'conflict') { await context.journal.readConfirmed(meta,receipt); context.check(); context.conflict.value = {meta,receipt}; return; }
           await context.journal.clearConfirmed(meta,receipt); context.check();
         },
-        recover:context.recoverOriginal
+        recover:context.recoverOriginal,discardConflict:context.discardConflict
       };
       const api = {open:async () => { context.check(); const fresh = await read(id,captured); context.check(); return fresh; }};
       for (const kind of ['patch','approve','withdraw','adopt']) {
@@ -376,14 +394,14 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
   const heading = document.createElement('h2'); heading.textContent = 'Coauthor draft';
   const status = document.createElement('p'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); status.setAttribute('tabindex', '-1');
   const body = document.createElement('div'); section.append(heading, status, body); root.append(section);
-  let generation = 0, currentScope = scope && {...scope}, view = null, local = null, dirty = false, conflict = false, conflictDiff = null, busy = false, uncertain = null, destroyed = false, events = [], priorPending = pending;
+  let generation = 0, currentScope = scope && {...scope}, view = null, local = null, dirty = false, conflict = false, conflictDiff = null, recoveredFields = null, busy = false, uncertain = null, destroyed = false, events = [], priorPending = pending;
   const el = (tag, text) => { const n = document.createElement(tag); if (text != null) n.textContent = String(text); return n; };
   const same = (a,b) => !!a && !!b && a.sourceId === b.sourceId && a.sessionId === b.sessionId && a.actorId === b.actorId && a.role === b.role && a.revocationGeneration === b.revocationGeneration && a.draftId === b.draftId;
   const valid = s => !!s && !!s.sourceId && !!s.sessionId && !!s.actorId && !!s.draftId && Number.isInteger(s.revocationGeneration) && ['creator','collaborator'].includes(s.role);
   const validDraft = d => d && d.draftId === currentScope.draftId && d.schemaVersion === 1 && Number.isInteger(d.revision) && d.revision >= 0 && d.content && typeof d.content.title === 'string' && typeof d.content.body === 'string' && d.content.title.length <= 200 && d.content.body.length <= 12000;
   const copy = c => ({title:c.title, body:c.body});
   const differs = (a,b) => a.title !== b.title || a.body !== b.body;
-  function reset(message = 'Draft cleared.') { generation++; view = null; local = null; dirty = false; conflict = false; conflictDiff = null; busy = false; uncertain = null; priorPending = null; events = []; body.replaceChildren(); status.textContent = message; }
+  function reset(message = 'Draft cleared.') { generation++; view = null; local = null; dirty = false; conflict = false; conflictDiff = null; recoveredFields = null; busy = false; uncertain = null; priorPending = null; events = []; body.replaceChildren(); status.textContent = message; }
   function adopt(result) {
     const d = result && result.draft;
     if (!validDraft(d)) { reset('Draft unavailable or access revoked.'); return false; }
@@ -427,9 +445,21 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
           render('Selected text is retained. Save explicitly to apply it; approval is separate.');
         }); body.append(choose);
       }
+      if (recoveredFields) {
+        body.append(el('h3','Recovered proposed fields'));
+        for (const row of recoveredFields) body.append(el('p',`${row.field === 'title' ? 'Title' : 'Body'}: ${row.value}`));
+        body.append(el('p','Only the original changed fields were recovered. Other fields below use the current accepted text; no historical base difference was reconstructed.'));
+      }
       body.append(el('h3', 'Current accepted text'), el('p', `Title: ${view.content.title}`), el('p', `Body: ${view.content.body}`), el('h3', 'Your unsent text'), el('p', `Title: ${local.title}`), el('p', `Body: ${local.body}`));
       body.append(button('Keep my text for a new edit', !busy && !uncertain, () => { if (epoch !== generation) return; conflictDiff = null; conflict = false; dirty = differs(local, view.content); render('Your text is retained against the current revision. Save explicitly to apply it.'); }));
-      body.append(button('Use accepted text', !busy && !uncertain, () => { if (epoch !== generation) return; conflictDiff = null; local = copy(view.content); dirty = false; conflict = false; render('Accepted text selected.'); }));
+      body.append(button('Use accepted text', !busy && !uncertain, async () => {
+        if (epoch !== generation) return;
+        const captured = currentScope;
+        try {
+          if (typeof actions.discardConflict === 'function') { busy = true; render('Confirming the resolved conflict.'); await actions.discardConflict(); if (epoch !== generation || !same(captured,currentScope)) return; actions.assertCurrent(); busy = false; }
+          conflictDiff = null; recoveredFields = null; local = copy(view.content); dirty = false; conflict = false; render('Accepted text selected.');
+        } catch (err) { if (epoch === generation && same(captured,currentScope)) { busy = false; if ([401,403,404].includes(err?.status)) { reset('Draft unavailable or access revoked.'); return; } try { actions.assertCurrent(); } catch (_) { reset('Access changed. Draft cleared.'); return; } render('The protected proposal remains retained. Refresh current access before discarding it.'); } }
+      }));
     }
     const canMutate = typeof actions.journal === 'function' && typeof actions.newRequestId === 'function' && typeof actions.complete === 'function' && typeof actions.withLock === 'function';
     let approveButton, adoptButton, withdrawButton;
@@ -461,7 +491,10 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
   async function recoverPrior() {
     if (!priorPending || busy || typeof actions.recover !== 'function') return;
     const epoch = generation, captured = currentScope; busy = true; render('Recovering the prior operation.');
-    try { const result = await actions.recover(priorPending); if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (!result || result.resolved !== true) { render('Prior operation remains unconfirmed.'); return; } priorPending = null; if (result.withdrawn === true) { reset('Draft withdrawn.'); return; } if (result.adopted === true) { reset('Approved revision adopted. Review and approve the material separately in Studio.'); return; } if (result.projection && adopt(result.projection)) render('Prior operation reconciled.'); else render('Prior operation reconciled. Refresh the draft.'); }
+    try { const result = await actions.recover(priorPending); if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (!result || result.resolved !== true) { render('Prior operation remains unconfirmed.'); return; } priorPending = null; if (result.withdrawn === true) { reset('Draft withdrawn.'); return; } if (result.adopted === true) { reset('Approved revision adopted. Review and approve the material separately in Studio.'); return; } if (result.committedPatch === true) { dirty = false; conflict = false; conflictDiff = null; recoveredFields = null; } if (result.projection && adopt(result.projection)) {
+      if (result.conflicted === true && Array.isArray(result.proposal)) { recoveredFields = result.proposal.map(row => ({...row})); local = copy(view.content); for (const row of recoveredFields) local[row.field] = row.value; dirty = differs(local,view.content); conflict = true; conflictDiff = null; render('The prior edit conflicted. Proposed fields remain encrypted until you explicitly discard them or save a new edit.'); }
+      else render('Prior operation reconciled.');
+    } else render('Prior operation reconciled. Refresh the draft.'); }
     catch (err) { if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (err && (err.status === 401 || err.status === 403 || err.status === 404)) reset('Draft unavailable or access revoked.'); else render('Prior operation remains unconfirmed.'); }
   }
   async function mutate(kind) {
@@ -496,7 +529,7 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
       if (operation.kind === 'adopt' && result.operation.state === 'committed') { reset('Approved revision adopted. Review and approve the material separately in Studio.'); return; }
       if (operation.kind === 'patch') {
         if (result.operation.state === 'conflict') {
-          conflictDiff = null;
+          conflictDiff = null; recoveredFields = null;
           const candidate = diffConflict(result.conflict);
           if (candidate && currentScope.role === 'creator' && typeof actions.assertCurrent === 'function' && typeof api.open === 'function') {
             try {
@@ -515,7 +548,7 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
           }
           if (result.draft && adopt(result)) { conflict = true; dirty = true; render(); } else render('Conflict received; refresh the current draft.'); return;
         }
-        dirty = false; if (!adopt(result)) { render('Saved; refresh the current draft.'); return; } local = copy(view.content); conflict = false; render('Changes saved.'); return;
+        dirty = false; recoveredFields = null; if (!adopt(result)) { render('Saved; refresh the current draft.'); return; } local = copy(view.content); conflict = false; render('Changes saved.'); return;
       }
       if (result.operation.state === 'committed') { if (view && result.operation.revision === view.revision) view = {...view, approvedRevision:view.revision}; render('Revision approved. Adoption and presentation require separate creator actions.'); }
       else render('The revision changed. Refresh before deciding.');

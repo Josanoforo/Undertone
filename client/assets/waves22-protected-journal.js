@@ -53,21 +53,27 @@ export function createProtectedCoeditJournal({scope, isCurrent, storage: supplie
     const saved = await decode(raw); guard();
     if (storage.getItem(name) !== raw) throw Error('Recovery record changed'); guard(); return saved;
   }
-  async function savePending(meta, body) {
+  async function savePending(meta, body, replaceConflict = null) {
     guard(); if (!validPending(meta,body,captured.draftId)) throw Error('Invalid pending request');
     if (meta.kind !== 'patch' && captured.role !== 'creator') throw Error('Creator access required');
     // Snapshot before any await, so a caller cannot change the encrypted request.
     const pending = JSON.parse(JSON.stringify({meta,body}));
-    const name = await keyName(); guard(); if (storage.getItem(name) !== null) throw Error('Prior operation pending'); guard();
+    const name = await keyName(); guard(); const previousRaw = storage.getItem(name); guard();
+    if (previousRaw !== null) {
+      if (!replaceConflict) throw Error('Prior operation pending');
+      const previous = await decode(previousRaw); guard();
+      assertReceipt(replaceConflict.meta,replaceConflict.receipt,previous.meta);
+      const op = replaceConflict.receipt.operation;
+      if (previous.meta.kind !== 'patch' || op.state !== 'conflict' || !revision(op.currentRevision) || meta.kind !== 'patch' || meta.requestId === previous.meta.requestId || meta.revision < op.currentRevision) throw Error('Unresolved operation cannot be replaced');
+    } else if (replaceConflict) throw Error('Original conflict record missing');
     const k = await key(); guard(); const iv = cryptoProvider.getRandomValues(new Uint8Array(12)); guard();
     const cipher = await cryptoProvider.subtle.encrypt({name:'AES-GCM',iv,additionalData:encoder.encode(context())},k,encoder.encode(JSON.stringify(pending))); guard();
     const envelope = JSON.stringify({v:1,iv:Array.from(iv),cipher:Array.from(new Uint8Array(cipher))});
     // The check and write are synchronous within this tab, after all awaits.
-    if (storage.getItem(name) !== null) throw Error('Prior operation pending'); guard(); storage.setItem(name,envelope); guard();
+    if (storage.getItem(name) !== previousRaw) throw Error('Recovery record changed'); guard(); storage.setItem(name,envelope); guard();
   }
-  async function clearConfirmed(expected, receipt) {
-    const name = await keyName(); guard(); const raw = storage.getItem(name); guard(); if (raw === null) throw Error('Recovery record missing');
-    const saved = await decode(raw); guard(); const m = saved.meta, op = receipt?.operation;
+  function assertReceipt(expected,receipt,m) {
+    const op = receipt?.operation;
     if (!expected || expected.requestId !== m.requestId || expected.kind !== m.kind || expected.draftId !== m.draftId || expected.revision !== m.revision || !op) throw Error('Receipt mismatch');
     if (m.kind === 'adopt') {
       if (captured.role !== 'creator' || op.state !== 'committed' || op.requestId !== m.requestId || op.materialId !== m.materialId || op.materialVersion !== m.baseMaterialVersion + 1) throw Error('Adoption receipt mismatch');
@@ -75,7 +81,13 @@ export function createProtectedCoeditJournal({scope, isCurrent, storage: supplie
       if (op.action !== m.kind || !['committed','conflict'].includes(op.state)) throw Error('Receipt mismatch');
       if (m.kind === 'patch' ? (op.state === 'conflict' ? op.baseRevision !== m.revision : op.revision !== m.revision + 1) : (op.state !== 'committed' || op.revision !== m.revision)) throw Error('Receipt revision mismatch');
     }
-    guard(); if (storage.getItem(name) !== raw) throw Error('Recovery record changed'); guard(); storage.removeItem(name); guard();
   }
-  return {available:() => { try { guard(); return true; } catch { return false; } }, currentScope:() => { guard(); return {sessionId:captured.sessionId,actorId:captured.actorId,role:captured.role,draftId:captured.draftId}; }, load, loadMetadata:async () => { const saved = await load(); guard(); return saved ? {...saved.meta} : null; }, savePending, clearConfirmed, destroy:() => { destroyed = true; }};
+  async function confirmed(expected,receipt,remove) {
+    const name = await keyName(); guard(); const raw = storage.getItem(name); guard(); if (raw === null) throw Error('Recovery record missing');
+    const saved = await decode(raw); guard(); assertReceipt(expected,receipt,saved.meta);
+    guard(); if (storage.getItem(name) !== raw) throw Error('Recovery record changed'); guard();
+    if (remove) { storage.removeItem(name); guard(); }
+    return saved;
+  }
+  return {available:() => { try { guard(); return true; } catch { return false; } }, currentScope:() => { guard(); return {sessionId:captured.sessionId,actorId:captured.actorId,role:captured.role,draftId:captured.draftId}; }, load, loadMetadata:async () => { const saved = await load(); guard(); return saved ? {...saved.meta} : null; }, savePending, readConfirmed:(expected,receipt) => confirmed(expected,receipt,false), clearConfirmed:(expected,receipt) => confirmed(expected,receipt,true), destroy:() => { destroyed = true; }};
 }

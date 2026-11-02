@@ -47,3 +47,9 @@ Use this SETUP for a fresh checkout. OPERATIONS.md preserves the earlier operati
 ## Brand assets and fonts
 
 The released Undertone v1.0 Tangerine Block client includes exact logo/favicon assets and local Fraunces SemiBold600 with its OFL notice. Tokens also retain a Google Fonts CSS import for other requested families/weights, so full typography has a network dependency and fallbacks when unavailable. The included CSP source permits those style/font origins; this does not assert runtime deployment. Six equivalent before/after comparisons remain unperformed; no additional visual acceptance is claimed.
+
+## Regional OCR and sentence workflow
+
+Regional OCR uses the installed Windows.Media.Ocr recognizer through the standard C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe path. The worker source is included; no recognizer/language pack is installed by setup. It processes only the selected PNG crop; missing recognizer, unsupported rotation or failure remains unavailable, without automatic retry. This is regional OCR, not full-video or live understanding.
+
+Final text can be split into conservative punctuation units and forwarded through existing Creator/Viewer translation admission. Sentence playback is explicitly requested and buffered; native streaming and word alignment are unavailable. The source union/admission/player checks do not establish newly generated live translated sentence audio; no such generation was performed for this release.

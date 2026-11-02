@@ -1,12 +1,13 @@
 // Private run projections are read through the authenticated shell.
 import {mountCaptions} from './waves21-captions.js';
+import {mountSentenceDelivery} from './waves21_sentence_player.js';
 // Load the owned stylesheet when this view is mounted by an existing shell.
 if (!document.querySelector('link[data-w21-captions]')) {
   const style = document.createElement('link'); style.rel = 'stylesheet';
   style.href = new URL('./waves21-captions.css', import.meta.url).href;
   style.dataset.w21Captions = ''; document.head.append(style);
 }
-export function mountSpeechView(root, {read, selectedSource, createRun, ingest, readRules, createRules, updateRules, revise, finalize, preview, identity, assertIdentity, useForListening}) {
+export function mountSpeechView(root, {read, selectedSource, createRun, ingest, readRules, createRules, updateRules, revise, finalize, preview, identity, assertIdentity, useForListening, useSentenceForListening}) {
   const section = document.createElement('section');
   const heading = document.createElement('h2'); heading.textContent = 'Private speech run';
   const help = document.createElement('p'); help.textContent = 'Open an existing private speech run to review its current captions, revision history and missing intervals. Indexed captions reuse completed recognition. An optional growing-audio preview shows provisional hypotheses until you explicitly end the utterance. The engine buffers each prefix; native streaming and live capture are unavailable here. Overlap detection and voice separation are unavailable; simultaneous speech may be omitted. Times are relative to the run.';
@@ -17,6 +18,7 @@ export function mountSpeechView(root, {read, selectedSource, createRun, ingest, 
   const content = document.createElement('div');
   section.append(heading, help, label, button, status, content); root.append(section);
   let generation = 0;
+  let sentencePlayers = [];
   const text = (tag, value) => { const node = document.createElement(tag); node.textContent = value; return node; };
   const rulesSection = document.createElement('section');
   const rulesLabel = text('label', 'Private pronunciation rule set ID ');
@@ -199,7 +201,7 @@ export function mountSpeechView(root, {read, selectedSource, createRun, ingest, 
       return result;
     });
   }
-  function reset() { generation++; button.disabled = false; content.replaceChildren(); status.textContent = 'Run not loaded.'; clearRules(); }
+  function reset() { sentencePlayers.forEach(p => p.dispose()); sentencePlayers = []; generation++; button.disabled = false; content.replaceChildren(); status.textContent = 'Run not loaded.'; clearRules(); }
   id.addEventListener('input', reset);
   button.addEventListener('click', async () => {
     reset(); const ticket = generation; const runId = id.value.trim(); const scope = identity();
@@ -380,7 +382,21 @@ export function mountSpeechView(root, {read, selectedSource, createRun, ingest, 
               } catch { if (ticket === generation) result.textContent = 'Settings could not be checked; the run, rule set or access may have changed.'; }
               finally { check.disabled = false; }
             });
-            for (const input of Object.values(fields)) input.addEventListener('input', () => { result.textContent = 'Settings changed; check again.'; });
+            const sentence = mountSentenceDelivery(details, {
+              event: current, scopeKey: JSON.stringify([scope.sessionId, scope.role, scope.viewerId, scope.actorBinding, scope.token, runId, current.segmentId]),
+              useForTranslation: typeof useSentenceForListening==='function' ? (selection,language)=>{assertIdentity(scope);if(ticket!==generation||id.value.trim()!==runId)throw Error('Run changed');useSentenceForListening(selection,language,scope);} : undefined,
+              current: () => { try { assertIdentity(scope); return ticket === generation && id.value.trim() === runId; } catch { return false; } },
+              configuration: () => ({...Object.fromEntries(Object.entries(fields).map(([key, input]) => [key, input.value.trim()])), rate:Number(fields.rate.value), outputFormat:'audio/wav', controls:[]}),
+              call: async (suffix, method='GET', body) => {
+                assertIdentity(scope); if (ticket !== generation || id.value.trim() !== runId) throw Error('Run changed');
+                const path = method === 'policy' ? `w20/delivery-sources` : `w21/speech/runs/${encodeURIComponent(runId)}/${suffix}`;
+                const response = await fetch(`/api/sessions/${encodeURIComponent(scope.sessionId)}/${path}`, {method:method === 'policy' ? 'GET' : method, headers:{Authorization:`Bearer ${scope.token}`, ...(body ? {'Content-Type':'application/json'} : {})}, ...(body ? {body:JSON.stringify(body)} : {})});
+                const value = await response.json(); assertIdentity(scope);
+                if (!response.ok || ticket !== generation || id.value.trim() !== runId) throw Error('Delivery unavailable'); return value;
+              }
+            });
+            sentencePlayers.push(sentence);
+            for (const input of Object.values(fields)) input.addEventListener('input', () => { sentence.stop(); result.textContent = 'Settings changed; check again.'; });
             details.append(check, result); item.append(details);
           }
         }

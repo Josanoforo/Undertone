@@ -17,9 +17,12 @@ def valid_selection(ref):
     if not isinstance(ref,dict):fail('invalid_request','Invalid typed selection.',422)
     t=ref.get('type')
     fields={'audience_handoff':{'type','projectId','handoffId','version','projectVersion'},'handoff':{'type','projectId','handoffId','version'},'contribution':{'type','activityId','contributionId','revision','grantId','grantRevision'},'studio':{'type','materialId','version'},'activity_fragment':{'type','activityId','version','fragmentId'},'activity_stage':{'type','activityId','version','stageRevision'},'activity_recap':{'type','activityId','recapId','revision'},'exchange_question':{'type','questionId','revision'},'exchange_answer':{'type','questionId','revision'}}
+    fields['speech_sentence']={'type','runId','segmentId','revision','sentenceIndex'}
     if t not in fields or set(ref)!=fields[t]:fail('invalid_request','Invalid typed selection.',422)
     for k,v in ref.items():
-        if k in ('revision','grantRevision','version','stageRevision','projectVersion'):
+        if k == 'sentenceIndex':
+            if type(v) is not int or not 0 <= v < 32:fail('invalid_request','Invalid sentence index.',422)
+        elif k in ('revision','grantRevision','version','stageRevision','projectVersion'):
             if type(v) is not int or v<(0 if k in ('version','stageRevision') else 1):fail('invalid_request','Invalid version.',422)
         elif k!='type' and not key(v):fail('invalid_request','Invalid source identity.',422)
     return dict(ref)
@@ -27,6 +30,9 @@ def valid_selection(ref):
 def resolve(row,selection):
     from .http import p10_public_material
     sid=row['session_id']; t=selection['type']
+    if t=='speech_sentence':
+        from . import waves21_speech_runtime
+        return waves21_speech_runtime.resolve_sentence_selection(row,selection)
     with store.connect() as db:
         if t in ('exchange_question','exchange_answer'):
             from . import phase12_jobs

@@ -100,8 +100,15 @@ def handle(handler, sid, actor, method, parts):
         grounding.ground(ctx, frame, body['regions'], grounding.png_metadata)
         payload = {'frame': frame, 'regions': body['regions']}
         def invoke(rows):
+            from . import waves21_ocr
+            ocr = waves21_ocr.callback()
             vision = _vision if len(body['regions']) == 1 else _vision_batch(body['regions'])
-            result = grounding.ground(ctx, frame, body['regions'], grounding.png_metadata, vision)
+            result = grounding.ground(ctx, frame, body['regions'], grounding.png_metadata, vision, ocr)
+            result['ocrEngine'] = waves21_ocr.capabilities()
+            if ocr is not None:
+                for region in result['regions']:
+                    if not region['ocr']:
+                        region['uncertainty'].append('No readable text was recognized in this crop; small or unclear text remains unknown.')
             result['imageSha256'] = _hash(rows[0]['source']['image'])
             return result
         status, result = ctx.generate(OPERATION, body['requestId'], payload, [ref], invoke)

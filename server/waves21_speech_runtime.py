@@ -379,7 +379,7 @@ def preview_rules(ctx, run_id, body):
     fields = {'ruleSetId', 'segmentId', 'expectedRevision', 'requestId', 'engine',
               'model', 'modelVersion', 'voiceId', 'voiceVersion', 'adapterVersion',
               'outputFormat', 'rate', 'controls'}
-    if not isinstance(body, dict) or set(body) != fields:
+    if not isinstance(body, dict) or set(body) not in (fields, fields | {'sentenceIndex'}):
         _fail('invalid_request', 'A complete pronunciation preview is required.', 422)
     with ctx.lock:
         obj = _load(ctx, run_id)
@@ -389,12 +389,30 @@ def preview_rules(ctx, run_id, body):
         if (not event or event['state'] != 'final' or type(body['expectedRevision']) is not int
                 or event['revision'] != body['expectedRevision']):
             _fail('not_current_final', 'A current final segment is required.')
+        selected_text = event['text']
+        unit = None
+        if 'sentenceIndex' in body:
+            from . import waves21_sentence_units
+            try:
+                units = waves21_sentence_units.split(event['text'])
+                index = body['sentenceIndex']
+                if type(index) is not int or not 0 <= index < len(units):
+                    raise ValueError()
+                unit = units[index]
+                selected_text = unit['text']
+            except ValueError:
+                _fail('sentence_unavailable', 'A bounded sentence from the current final caption is required.', 422)
         request = {key: body[key] for key in ('requestId', 'engine', 'model', 'modelVersion',
                    'voiceId', 'voiceVersion', 'adapterVersion', 'outputFormat', 'rate', 'controls')}
         request.update({'ruleSetRevision':ruleset['revision'], 'scope':'private',
-                        'text':event['text'], 'language':event['language'],
+                        'text':selected_text, 'language':event['language'],
                         'sourceId':obj['ref']['sourceId'], 'sourceRevision':obj['ref']['sourceRevision']})
         result = pronunciation.resolve_rules(ruleset, request, ctx.actor, lambda *_: True)
+        if unit is not None:
+            result['sentenceUnit'] = unit
+            result['identity']['sentenceUnit'] = {'segmentId':event['segmentId'], 'segmentRevision':event['revision'],
+                                                **{k:v for k,v in unit.items() if k != 'text'}}
+            result['generationKey'] = stream._digest(result['identity'])
         return result, obj['state'], ruleset
 
 
@@ -557,6 +575,26 @@ def handle(handler, sid, actor, method, parts):
             if len(parts) == 2 and method == 'GET':
                 with ctx.lock:
                     state = _load(ctx, run_id)['state']
+            elif len(parts) == 3 and parts[2] == 'sentences' and method == 'GET':
+                from . import waves21_sentence_units
+                with ctx.lock:
+                    state = _load(ctx, run_id)['state']
+                    segments = []
+                    for history in state['segments'].values():
+                        event = history[-1] if history else None
+                        if not event or event['state'] != 'final':
+                            continue
+                        try:
+                            units = waves21_sentence_units.split(event['text'])
+                            for unit in units:
+                                unit['selection'] = {'type':'speech_sentence', 'runId':run_id,
+                                                     'segmentId':event['segmentId'], 'revision':event['revision'],
+                                                     'sentenceIndex':unit['index']}
+                            segments.append({'segmentId':event['segmentId'], 'revision':event['revision'], 'units':units})
+                        except ValueError:
+                            segments.append({'segmentId':event['segmentId'], 'revision':event['revision'], 'units':[], 'unavailable':'sentence_unit_too_large'})
+                handler._w21_speech_final = lambda: _fence_state(ctx, run_id, state)
+                return 200, {'runId':run_id, 'segments':segments, 'output':'buffered_sentence', 'nativeStreaming':False, 'alignment':'unavailable'}
             elif len(parts) == 3 and parts[2] == 'generation' and method == 'POST':
                 body = handler.body()
                 if not isinstance(body, dict) or set(body) != {'request', 'policyRevision'}:
@@ -772,8 +810,12 @@ def generation_subscriber(ctx, run_id, request_id):
         if not row or row['owner_id'] != ctx.actor['owner']:
             _fail('not_found', 'Speech request unavailable.', 404)
         request = json.loads(row['data'])
-        subscriber = Subscriber(actor=ctx.actor['owner'], stream=run_id,
-                                sequence=request['preview']['expectedRevision'], authority=marker)
+        preview = request['preview']
+        sentence = preview.get('sentenceIndex')
+        subscriber = Subscriber(actor=ctx.actor['owner'],
+                                stream=run_id if sentence is None else 'sentence:' + stream._digest([run_id, preview['segmentId'], sentence]),
+                                sequence=preview['expectedRevision'],
+                                authority=marker)
         return identity, subscriber, plan
 
 
@@ -794,14 +836,15 @@ def eligible_generation_subscriber(identity, subscriber):
             if not row or row['owner_id'] != subscriber.actor:
                 return False
             request = json.loads(row['data'])
-            if request.get('runId') != subscriber.stream:
+            run_id = request.get('runId')
+            if not isinstance(run_id, str):
                 return False
-            obj = store.get(KIND, subscriber.stream, identity.session)
+            obj = store.get(KIND, run_id, identity.session)
             if not obj or obj.get('owner') != subscriber.actor:
                 return False
             actor = {'role': 'creator', 'sid': identity.session, 'owner': subscriber.actor}
             ctx = _StoredContext(identity.session, actor, obj['credentialHash'])
-            expected, current, _ = generation_subscriber(ctx, subscriber.stream, request['requestId'])
+            expected, current, _ = generation_subscriber(ctx, run_id, request['requestId'])
             return expected == identity and current == subscriber
     except (Phase10Error, stream.SpeechStreamError, pronunciation.PronunciationError,
             KeyError, TypeError, ValueError):
@@ -825,6 +868,50 @@ def resolve_delivery_request(handler, sid, actor, body):
             or body.get('choice') != 'local'):
         _fail('stale_context', 'Speech delivery selection changed.')
     return identity, subscriber
+
+
+def resolve_sentence_selection(row, selection):
+    """Typed Phase12 source hook; no translation, synthesis, or new authority.
+
+    The common typed-source owner must explicitly wire this function. It binds
+    a final private run sentence to the same actor, credential, original source,
+    segment revision and exact character range on every job rights check.
+    """
+    from . import waves21_sentence_units
+    if (not isinstance(selection, dict) or set(selection) !=
+            {'type', 'runId', 'segmentId', 'revision', 'sentenceIndex'} or
+            selection['type'] != 'speech_sentence' or row['role'] not in ('creator', 'viewer')):
+        _fail('stale_context', 'A current private final sentence is required.')
+    try:
+        stream._token(selection['runId']); stream._token(selection['segmentId'])
+    except stream.SpeechStreamError:
+        _fail('stale_context', 'The selected sentence identity is invalid.')
+    actor = {'role':row['role'], 'sid':row['session_id'], 'owner':row['actor_id']}
+    ctx = _StoredContext(row['session_id'], actor, row['credential_hash'])
+    with ctx.lock:
+        obj = _load(ctx, selection['runId'])
+        history = obj['state']['segments'].get(selection['segmentId'])
+        event = history[-1] if history else None
+        if (not event or event['state'] != 'final' or event['language'] not in ('en', 'es')
+                or type(selection['revision']) is not int or event['revision'] != selection['revision']):
+            _fail('stale_context', 'The selected final sentence changed.')
+        try:
+            units = waves21_sentence_units.split(event['text'])
+            index = selection['sentenceIndex']
+            if type(index) is not int or not 0 <= index < len(units):
+                raise ValueError()
+            unit = units[index]
+        except ValueError:
+            _fail('stale_context', 'The selected sentence is unavailable.')
+        meta = {'type':'speech_sentence', 'runId':obj['id'], 'segmentId':event['segmentId'],
+                'revision':event['revision'], 'originalSourceRef':obj['ref'],
+                'sentenceUnit':{k:v for k,v in unit.items() if k != 'text'},
+                'language':event['language'], 'purpose':'private_listening',
+                'captionOrigin':event.get('recognitionOrigin', 'run_revision'),
+                'sentenceTiming':'unavailable'}
+        return ({'id':obj['ref']['sourceId'], 'language':event['language'], 'projection':meta},
+                {'text':unit['text'], 'alignment':None, 'captureRunId':obj['state']['captureRunId']},
+                dict(selection))
 
 
 def _delivery_body(ctx, run_id, request_id, policy_revision):
@@ -876,6 +963,12 @@ def view_generation(ctx, run_id, request_id, *, cancel=False):
         identity, subscriber, _ = generation_subscriber(ctx, run_id, request_id)
         key = delivery._hash(['receipt', ctx.sid, ctx.actor['owner'], request_id])
         service = delivery._service
+        service._auth(ctx.handler, ctx.sid, ctx.actor)
+        if ctx.store.get(delivery._RECEIPT, key, ctx.sid) is None:
+            # The scheduler writes this durable receipt before admission. Under
+            # its lock, absence establishes no scheduled effect for this ID.
+            ctx.handler._w21_speech_final = lambda: _generation_fence(ctx, run_id, request_id, identity, subscriber)
+            return {'state':'not_admitted', 'requestId':request_id, 'text_fallback':True}
         item = service.live.get(key)
         if item and (item[1], item[2]) != (identity, subscriber):
             _fail('stale_context', 'Speech delivery changed; refresh.')

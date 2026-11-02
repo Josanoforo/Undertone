@@ -464,7 +464,7 @@ def submit(handler,sid,actor,kind,body):
             row=fetch(sid,actor['owner'],body['requestId'])
             handler._p12_binding=(sid,actor,body['requestId'],'complete')
             return 200,{'operation':view(row)}
-        db.execute("INSERT INTO phase12_jobs(session_id,actor_id,credential_hash,role,request_id,kind,fingerprint,payload,ref,source_id,state,timing) VALUES(?,?,?,?,?,?,?,?,?,?,'queued',?)",(sid,actor['owner'],candidate['credential_hash'],actor['role'],body['requestId'],kind,fingerprint,canonical(payload),canonical(ref),ref.get('sourceId') or ref.get('contributionId') or ref.get('materialId') or ref.get('recapId') or ref.get('activityId') or ref.get('handoffId') or ref.get('questionId'),canonical(timing)))
+        db.execute("INSERT INTO phase12_jobs(session_id,actor_id,credential_hash,role,request_id,kind,fingerprint,payload,ref,source_id,state,timing) VALUES(?,?,?,?,?,?,?,?,?,?,'queued',?)",(sid,actor['owner'],candidate['credential_hash'],actor['role'],body['requestId'],kind,fingerprint,canonical(payload),canonical(ref),ref.get('sourceId') or ref.get('contributionId') or ref.get('materialId') or ref.get('recapId') or ref.get('activityId') or ref.get('handoffId') or ref.get('questionId') or (source.get('id') if ref.get('type')=='speech_sentence' else None),canonical(timing)))
         row=fetch(sid,actor['owner'],body['requestId'])
     start()
     return 202,{'operation':view(row)}

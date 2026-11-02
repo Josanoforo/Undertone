@@ -15,3 +15,5 @@ The source includes private viewer context/practice, voluntary contributions, cr
 | Capacity and comparisons | Finite component evidence only; no saturation, broad device capacity, provider benchmark win or all-feature completion is claimed. Unknown outcomes remain unknown. |
 
 The project has partial accepted outcomes with recorded limits. Packaging is separate from functional acceptance. Do not infer that every included module is independently accepted or that a previously observed service is running these bytes.
+
+Released source additions: optional installed Windows regional OCR over authorized selected PNG crops; conservative final-text sentence units and existing Creator/Viewer translation admission; explicit buffered sentence player/reauthorization. No live/native streaming, word alignment, full-video OCR, newly generated live translated sentence audio or whole-Wave21 completion is claimed. Missing optional engines remain unavailable.

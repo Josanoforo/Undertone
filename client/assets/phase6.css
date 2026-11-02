@@ -6,16 +6,16 @@
 }
 .p6-view.active { display: grid; }
 .p6-list { display: grid; gap: 8px; margin: 8px 0; min-width: 0; }
-.p6-record { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; overflow-wrap: anywhere; }
+.p6-record { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--ut-paper); overflow-wrap: anywhere; }
 .p6-record p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
 .p6-record button { margin-top: 7px; }
 .p6-service-state {
   margin: 0;
   padding: 11px 13px;
-  border: 1px solid #d6e2da;
+  border: 1px solid var(--ut-peach);
   border-radius: 8px;
-  background: #f5f8f5;
-  color: #41564a;
+  background: var(--ut-paper);
+  color: var(--ut-cocoa);
   font-size: 12px;
   line-height: 1.5;
 }
@@ -24,12 +24,12 @@
   padding: clamp(14px, 2.2vw, 22px);
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #fff;
+  background: var(--ut-paper);
 }
 .p6-card h2 { margin: 0 0 8px; font-size: 17px; }
 .p6-card h3 { margin: 18px 0 8px; font-size: 14px; }
 .p6-card > p { line-height: 1.55; }
-.p6-card label:not(.check-line) { display: block; margin: 12px 0 5px; color: #526159; font-size: 11px; font-weight: 650; }
+.p6-card label:not(.check-line) { display: block; margin: 12px 0 5px; color: var(--ut-cocoa); font-size: 11px; font-weight: 650; }
 .p6-card input:not([type="checkbox"]),
 .p6-card textarea,
 .p6-card select {
@@ -40,25 +40,25 @@
   padding: 9px 10px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  background: #fff;
+  background: var(--ut-paper);
   color: var(--ink);
   font: inherit;
   font-size: 12px;
 }
 .p6-card textarea { resize: vertical; }
 .p6-card fieldset { min-width: 0; margin: 14px 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
-.p6-card legend { padding: 0 5px; color: #526159; font-size: 11px; font-weight: 700; }
+.p6-card legend { padding: 0 5px; color: var(--ut-cocoa); font-size: 11px; font-weight: 700; }
 .p6-card .check-line { align-items: flex-start; margin: 10px 0; line-height: 1.45; }
 .p6-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
 .p6-grid fieldset { margin: 8px 0; }
 .p6-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .p6-actions button { white-space: normal; }
-.p6-empty { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; border: 1px dashed #cdd8d0; border-radius: 8px; color: var(--muted); background: #fafbf9; font-size: 12px; line-height: 1.5; }
+.p6-empty { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; border: 1px dashed var(--ut-peach); border-radius: 8px; color: var(--muted); background: var(--ut-paper); font-size: 12px; line-height: 1.5; }
 .p6-card [disabled] { cursor: not-allowed; opacity: .58; }
 .p6-card textarea:focus-visible,
 .p6-card input:focus-visible,
 .p6-card select:focus-visible,
-.p6-card button:focus-visible { outline: 3px solid #6c9a80; outline-offset: 2px; }
+.p6-card button:focus-visible { outline: 3px solid var(--ut-mint); outline-offset: 2px; }
 @media (max-width: 760px) {
   .main-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; gap: 3px; }
   .nav-item { width: 100%; min-width: 0; min-height: 48px; justify-content: center; flex-direction: column; gap: 2px; padding: 5px 2px; white-space: normal; text-align: center; font-size: 9px; line-height: 1.1; }

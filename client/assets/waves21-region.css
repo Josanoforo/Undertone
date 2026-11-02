@@ -3,6 +3,6 @@
 .w21-region-frame { position: relative; width: fit-content; max-width: 100%; line-height: 0; }
 .w21-region-frame img { display: block; width: 100%; height: auto; }
 .w21-region-overlay { position: absolute; inset: 0; pointer-events: none; }
-.w21-region-marker { position: absolute; box-sizing: border-box; border: 3px solid #ffdc35; outline: 2px solid #111; }
+.w21-region-marker { position: absolute; box-sizing: border-box; border: 3px solid var(--ut-apricot); outline: 2px solid var(--ut-ink); }
 .w21-region-details { line-height: 1.5; }
 .w21-region button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

@@ -7,7 +7,7 @@
 
 .w27-source-list > li,
 .w27-selected-list > li {
-  border: 1px solid var(--line, #3b3b45);
+  border: 1px solid var(--line, var(--ut-cocoa));
   border-radius: .5rem;
   display: grid;
   gap: .5rem;
@@ -37,7 +37,7 @@
 .w27-selected-list button:focus-visible,
 .w27-selected-list input:focus-visible,
 .w27-actions button:focus-visible {
-  outline: 3px solid var(--focus, #91caff);
+  outline: 3px solid var(--focus, var(--ut-mint));
   outline-offset: 2px;
 }
 

@@ -1,6 +1,6 @@
 # Source release scope
 
-This Git tree is a local review candidate, not a hosted deployment or contest submission. It preserves the stable released source/visual baseline and integrates exact released functional fixes and optional-component notices. A later visual identity can replace only its released file delta; no active designer files were copied.
+This Git tree is a local review candidate, not a hosted deployment or contest submission. It preserves a frozen released functional snapshot and integrates the Undertone v1.0 Tangerine Block visual source released at15:00Mexico City on2November2026, exact released functional fixes and optional-component notices. No active implementation files were copied. The visual release lacks six equivalent before/after comparisons and is not a new claim of full visual acceptance.
 
 Core local UI setup uses Python3.12 and the standard library. Generation and ASR require separate optional prerequisites. Speech prefix replay uses buffered growing prefixes and provisional/final states, not native streaming or live capture. Optional speech components are included with their actual limits: hosted speech is unavailable in a clean checkout; local voice installation and its model manifest remain held. The complete wheel lock is factual metadata and does not clear the exact Spanish model or archived phonemizer payload.
 

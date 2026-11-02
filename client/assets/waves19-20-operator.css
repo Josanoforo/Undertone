@@ -1,4 +1,5 @@
 body.operator-helper-mode > :not(#operatorHelper) { display:none !important; }
 body.operator-helper-mode #operatorHelper { display:block; max-width:52rem; margin:2rem auto; padding:1rem; }
-#operatorEntry { padding:.5rem 1rem; } .w19-operator label { display:block; margin:.5rem 0; } .w19-operator input,.w19-operator textarea { display:block; width:100%; max-width:45rem; } .w19-operator textarea { min-height:7rem; } .w19-operator article { border:1px solid #aaa; padding:1rem; margin:1rem 0; } .w19-operator button { margin:.25rem; } .w19-operator pre { white-space:pre-wrap; overflow-wrap:anywhere; }
-.w19-desk { margin:1rem 0; min-width:0; } .w19-desk section { border-top:1px solid #cbd2cb; margin-top:1rem; padding:.5rem; overflow-wrap:anywhere; } .w19-desk :focus-visible { outline:3px solid #174f93; outline-offset:3px; } .w19-desk select { max-width:100%; }
+#operatorEntry { padding:.5rem 1rem; } .w19-operator label { display:block; margin:.5rem 0; } .w19-operator input,.w19-operator textarea { display:block; width:100%; max-width:45rem; } .w19-operator textarea { min-height:7rem; } .w19-operator article { border:1px solid var(--ut-mint); padding:1rem; margin:1rem 0; } .w19-operator button { margin:.25rem; } .w19-operator pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+.w19-desk { margin:1rem 0; min-width:0; } .w19-desk section { border-top:1px solid var(--ut-peach); margin-top:1rem; padding:.5rem; overflow-wrap:anywhere; } .w19-desk :focus-visible { outline:3px solid var(--ut-ember); outline-offset:3px; } .w19-desk select { max-width:100%; }
+

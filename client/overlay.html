@@ -2,15 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=1280,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Undertone · public output</title>
+    <link rel="stylesheet" href="/assets/undertone-tokens.css" />
     <link rel="stylesheet" href="/assets/overlay.css" />
+    <link rel="stylesheet" href="/assets/undertone-theme.css" />
     <script src="/assets/overlay.js" defer></script>
   </head>
   <body>
     <main class="frame" aria-live="polite">
       <header class="top">
-        <div class="brand">undertone<span>/</span></div>
+        <div class="brand"><img src="/assets/undertone-logotype-on-tangerine.svg" alt="Undertone" /></div>
         <div class="format" id="format"></div>
       </header>
       <section class="content" id="content">
@@ -20,12 +22,13 @@
         </div>
       </section>
       <footer class="footer">
-        <span>Local public output</span
+        <span id="footerStatus" class="ut-pill pending">Waiting for creator</span
         ><span
           ><span class="notice" id="notice"></span>
           <span class="page" id="page"></span
         ></span>
       </footer>
+      <svg class="ut-wave" viewBox="0 0 620 18" aria-hidden="true" focusable="false"><path d="M10 9 Q20 5 30 9 T50 9 T70 9 T90 9 T110 9 T130 9 T150 9 T170 9 T190 9 T210 9 T230 9 T250 9 T270 9 T290 9 T310 9 T330 9 T350 9 T370 9 T390 9 T410 9 T430 9 T450 9 T470 9 T490 9 T510 9 T530 9 T550 9 T570 9 T590 9 T610 9" /></svg>
     </main>
   </body>
 </html>

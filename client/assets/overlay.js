@@ -16,13 +16,10 @@
   function setFooter(approved) {
     if (!footerLabel) return;
     const english = document.documentElement.lang === "en";
+    footerLabel.className = `ut-pill ${approved ? "onstream" : "pending"}`;
     footerLabel.textContent = approved
-      ? english
-        ? "Approved editorial intervention"
-        : "Intervención editorial aprobada"
-      : english
-        ? "Local public output"
-        : "Salida pública local";
+      ? english ? "On stream" : "En directo"
+      : english ? "Waiting for creator" : "En espera del creador";
   }
 
   const node = (tag, className, text) => {

@@ -43,3 +43,7 @@ Use [recovery](delivery/waves30/RECOVERY.md) for private backup/isolated recover
 ## Documentation and current source boundary
 
 Use this SETUP for a fresh checkout. OPERATIONS.md preserves the earlier operating manual verbatim; its historical evidence links refer to the original operator checkout and are not bundled. The finite legacy evaluator packager selects its own270-source inventory, a subset of this repository, and does not define this full Git source distribution. No new ZIP was built. See [release scope](RELEASE_SCOPE.md).
+
+## Brand assets and fonts
+
+The released Undertone v1.0 Tangerine Block client includes exact logo/favicon assets and local Fraunces SemiBold600 with its OFL notice. Tokens also retain a Google Fonts CSS import for other requested families/weights, so full typography has a network dependency and fallbacks when unavailable. The included CSP source permits those style/font origins; this does not assert runtime deployment. Six equivalent before/after comparisons remain unperformed; no additional visual acceptance is claimed.

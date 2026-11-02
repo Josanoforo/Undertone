@@ -6,5 +6,6 @@
 .w18-segment input:not([type=checkbox]), .w18-segment textarea, .w18-segment select { display: block; max-width: 100%; width: 36rem; }
 .w18-segment textarea { min-height: 8rem; }
 .w18-segment button { margin: .25rem .5rem .25rem 0; }
-.w18-segment :focus-visible { outline: 3px solid #2866b2; outline-offset: 2px; }
+.w18-segment :focus-visible { outline: 3px solid var(--ut-ember); outline-offset: 2px; }
 .w18-segment [role=status] { font-weight: 600; }
+

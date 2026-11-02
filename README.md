@@ -80,6 +80,22 @@ Undertone was built in scoped Codex CLI tasks: each assignment named its outcome
 
 Product decisions stayed human, start to finish.
 
+### Codex session IDs
+
+The following sessions contributed implementation, verification, or coordination. Roles identify the work performed; they do not claim that any one session contains most of the project's code.
+
+| Session | Role | Session ID |
+| --- | --- | --- |
+| Central | Wave coordination and evidence review | `01a169e6-0210-7ee0-9d3c-cdf714c4b510` |
+| CLI 12 | Bilingual implementation and Wave 12 closure | `01a19c6c-89ff-7ad1-9140-925844d91b47` |
+| CLI 17 | Voice/backend work and Wave 21 continuation | `01a19c6e-10c9-73b2-a3b0-9547759b1561` |
+| CLI 24 | Wave 23 grounding and Waves 24–25 review | `01a19dac-05a8-7383-8068-495834513aa6` |
+| Demo & Delivery | Demo and delivery preparation | `01a16a03-a058-74b2-a311-f2d1a97cd66f` |
+| GitHub preparation | Distribution preparation and repository review | `01a19dc0-dfd6-7560-bc2e-4e1d071e6517` |
+| Twitch Web Operation | Authorized browser-based Twitch verification | `01a19aaf-46dd-7832-bd4d-834ebcfb9b1b` |
+
+Only session identifiers and roles are listed here. Conversation transcripts, credentials, and operational logs are not included.
+
 ## Privacy, by construction
 
 - Private questions never mix with creator contributions.

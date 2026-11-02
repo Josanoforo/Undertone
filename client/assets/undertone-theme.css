@@ -1,0 +1,59 @@
+/* Undertone v1.0 semantic interface extension. Official colors stay in undertone-tokens.css. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+:root {
+  --green: var(--ut-teal);
+  --green-dark: var(--ut-teal);
+  --mint: var(--ut-peach);
+  --gold: var(--ut-tangerine);
+  --coral: var(--ut-ember);
+  --soft: var(--ut-peach);
+}
+body { background: var(--ut-peach); color: var(--ut-ink); font-size: 16px; }
+.topbar { background: var(--ut-paper); color: var(--ut-ink); }
+.frame .brand img { width: 142px; min-width: 96px; }
+.button.primary, .ut-btn { color: var(--ut-ink); }
+.eyebrow, .workspace-label, .nav-hint { font-family: var(--ut-font-mono); }
+h1, h2, h3, .page-head h1 { font-family: var(--ut-font-display); }
+.muted, .lede { color: var(--ut-cocoa); }
+.button:focus-visible, :where(a,button,input,textarea,select,[tabindex]):focus-visible { outline: 2px solid var(--ut-ember); outline-offset: 2px; }
+.nav-hint { color: var(--ut-cocoa); }
+.ut-pill { background: var(--ut-paper); color: var(--ut-ink); }
+.ut-pill.private { background: var(--ut-paper); color: var(--ut-teal); }
+.ut-pill.pending { background: var(--ut-paper); color: var(--ut-ember); }
+.ut-pill.onstream { background: var(--ut-tangerine); color: var(--ut-ink); }
+.button, button, input, select, textarea { border-radius: var(--ut-radius-sm); }
+button:not(.nav-item):not(.avatar), input, select, textarea { padding: 10px 12px; }
+button.primary { background: var(--ut-tangerine); color: var(--ut-ink); }
+input, select, textarea { border: 1px solid color-mix(in srgb, var(--ut-cocoa) 30%, transparent); background: var(--ut-paper); color: var(--ut-ink); }
+
+/* Final card geometry wins over the legacy full-frame rules above. */
+html:has(.frame) { color-scheme:dark; --overlay-ink:var(--ut-night); --overlay-surface:var(--ut-night2); --overlay-line:color-mix(in srgb,var(--ut-cream) 18%,transparent); --overlay-text:var(--ut-cream); --overlay-muted:var(--ut-apricot); }
+html:has(.frame), body:has(.frame) { margin:0; width:100%; height:100%; min-width:0; min-height:0; overflow:hidden; background:transparent; }
+body:has(.frame) { padding:0; font:400 2.037vh/1.5 var(--ut-font-ui); }
+html:has(.frame) .frame { position:fixed; inset:auto 5vw 8.889vh auto; width:min(32.292vw,57.407vh); height:auto; max-height:82.222vh; min-height:0; border:1px solid color-mix(in srgb,var(--ut-cream) 18%,transparent); border-radius:1.25vw; background:color-mix(in srgb,var(--ut-night) 92%,transparent); }
+html:has(.frame) .frame .top { height:7.593vh; min-height:0; padding:0 1.771vw; gap:1.25vw; }
+html:has(.frame) .frame .brand img { width:min(7.396vw,13.148vh); min-width:0; height:auto; }
+html:has(.frame) .frame .format { font-size:1.481vh; }
+html:has(.frame) .frame .content { min-height:0; overflow:auto; padding:2.778vh 2.083vw; }
+html:has(.frame) .frame .content h1 { margin:0 0 1.852vh; font:600 3.333vh/1.15 var(--ut-font-display); }
+html:has(.frame) .frame .blocks { max-height:none; overflow:visible; gap:1.481vh; }
+html:has(.frame) .frame .block { padding:1.852vh 1.25vw; border-radius:.729vw; font-size:2.037vh; line-height:1.5; }
+html:has(.frame) .frame .footer { height:5.37vh; min-height:0; padding:0 1.771vw; font-size:1.204vh; }
+html:has(.frame) .frame .footer .ut-pill { padding:.741vh .625vw; font-size:1.204vh; }
+html:has(.frame) .frame .ut-wave { height:1.667vh; }
+html:has(.frame) .frame .empty { min-height:16.667vh; }
+body:not(:has(.frame)) h1, body:not(:has(.frame)) h2, body:not(:has(.frame)) h3, body:not(:has(.frame)) .page-head h1 { font-family:var(--ut-font-display); font-weight:600; }
+
+
+/* Final overlay contrast and wave restoration. */
+body:has(.frame), html:has(.frame) .frame { color: var(--ut-cream); }
+html:has(.frame) .frame .format { color: var(--ut-ink); font-family: var(--ut-font-mono); font-weight: 600; }
+html:has(.frame) .frame .ut-wave { display: block; width: 100%; height: 18px; }
+html:has(.frame) .frame .ut-wave path { fill: none; stroke: var(--ut-tangerine); stroke-width: 2; stroke-linecap: round; }
+html:has(.frame) .frame .brand img { min-width: 96px; }

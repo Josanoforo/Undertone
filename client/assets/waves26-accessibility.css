@@ -1,5 +1,5 @@
 .w26-accessibility { padding: 1rem; border: 1px solid currentColor; }
 .w26-accessibility label, .w26-accessibility button { display: inline-block; margin: .5rem .5rem .5rem 0; }
 .w26-accessibility :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
-.w26-accessibility [aria-label="Captions"] p { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 1.125rem; line-height: 1.6; color: #111; background: #fff; padding: .5rem; max-width: 70ch; }
+.w26-accessibility [aria-label="Captions"] p { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 1.125rem; line-height: 1.6; color: var(--ut-ink); background: var(--ut-paper); padding: .5rem; max-width: 70ch; }
 .w26-accessibility select, .w26-accessibility button, .w26-accessibility input { font: inherit; max-width: 100%; }

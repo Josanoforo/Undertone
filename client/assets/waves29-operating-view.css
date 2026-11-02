@@ -1,22 +1,23 @@
-.w29-operating{display:grid;gap:.65rem;max-width:52rem;padding:1rem;border:1px solid #64748b;border-radius:.65rem;background:#fff;color:#172033}
+.w29-operating{display:grid;gap:.65rem;max-width:52rem;padding:1rem;border:1px solid var(--ut-teal);border-radius:.65rem;background:var(--ut-paper);color:var(--ut-night2)}
 .w29-operating h2,.w29-operating p,.w29-operating ol{margin:.15rem 0}
 .w29-operating [role=status]{min-height:1.5em}
-.w29-operating [role=status]:focus-visible,.w29-operating button:focus-visible,.w29-operating select:focus-visible,.w29-operating summary:focus-visible{outline:3px solid #155eef;outline-offset:2px}
+.w29-operating [role=status]:focus-visible,.w29-operating button:focus-visible,.w29-operating select:focus-visible,.w29-operating summary:focus-visible{outline:3px solid var(--ut-ember);outline-offset:2px}
 .w29-operating ol{padding-inline-start:1.5rem}
 .w29-operating button,.w29-operating select{font:inherit;min-height:2.5rem;padding:.35rem .65rem}
 .w29-operating button{margin:.15rem .4rem .15rem 0}
 .w29-operating button:disabled{cursor:not-allowed;opacity:.65}
-.w29-operating details{border-top:1px solid #94a3b8;padding-top:.5rem}
+.w29-operating details{border-top:1px solid var(--ut-mint);padding-top:.5rem}
 .w29-operating summary{cursor:pointer;font-weight:600}
 @media(prefers-reduced-motion:reduce){.w29-operating *{scroll-behavior:auto}}
-.w29-presets{display:grid;gap:.6rem;max-width:52rem;padding:1rem;border:1px solid #64748b;border-radius:.65rem;background:#fff;color:#172033}
+.w29-presets{display:grid;gap:.6rem;max-width:52rem;padding:1rem;border:1px solid var(--ut-teal);border-radius:.65rem;background:var(--ut-paper);color:var(--ut-night2)}
 .w29-presets h3,.w29-presets p{margin:.15rem 0}
 .w29-presets [role=status]{min-height:1.5em}
 .w29-presets button,.w29-presets input{font:inherit;min-height:2.25rem}
 .w29-presets button{padding:.35rem .65rem}
 .w29-presets button:disabled{cursor:not-allowed;opacity:.65}
 .w29-presets input[type=checkbox],.w29-presets input[type=radio]{min-width:1.15rem;min-height:1.15rem;margin-inline-end:.5rem}
-.w29-preset-card{display:grid;gap:.3rem;padding:.75rem;border:1px solid #94a3b8;border-radius:.5rem}
+.w29-preset-card{display:grid;gap:.3rem;padding:.75rem;border:1px solid var(--ut-mint);border-radius:.5rem}
 .w29-preset-card label,.w29-presets>div>label{display:flex;align-items:center;gap:.35rem}
 .w29-preset-pending{font-weight:600}
-.w29-presets :focus-visible{outline:3px solid #155eef;outline-offset:2px}
+.w29-presets :focus-visible{outline:3px solid var(--ut-ember);outline-offset:2px}
+

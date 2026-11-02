@@ -16,6 +16,14 @@ import importlib.util
 from . import waves18_segments
 waves18_segments.DELIVERY_GUARDS_WIRED = True
 
+def app_content_security_policy():
+    return "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src blob:; connect-src 'self'; base-uri 'none'; frame-ancestors 'self'"
+
+def public_content_security_policy(nonce):
+    if nonce is None:
+        return "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self'; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; base-uri 'none'; frame-ancestors *"
+    return f"default-src 'none'; script-src 'nonce-{nonce}'; style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com; img-src 'self'; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; base-uri 'none'; frame-ancestors *"
+
 MAX_JSON=18*1024*1024
 IMAGE_LIMIT=4*1024*1024
 AUDIO_LIMIT=12*1024*1024
@@ -811,7 +819,7 @@ class Handler(BaseHTTPRequestHandler):
         new_vault=getattr(self,"_p10_new_vault_token",None)
         if status==201 and urlparse(self.path).path=="/api/p10/vaults" and isinstance(new_vault,str) and re.fullmatch(r"[A-Za-z0-9_-]{32,128}",new_vault):self.send_header("X-Vault-Capability",new_vault)
         self._p10_new_vault_token=None
-        if ctype.startswith("text/html"): self.send_header("Content-Security-Policy",csp or "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src blob:; connect-src 'self'; base-uri 'none'; frame-ancestors 'self'")
+        if ctype.startswith("text/html"): self.send_header("Content-Security-Policy",csp or app_content_security_policy())
         if status < 400 and getattr(self,"_phase11_header",None): self.send_header(*self._phase11_header)
         self.end_headers(); self.wfile.write(body)
     def body(self):
@@ -934,7 +942,7 @@ class Handler(BaseHTTPRequestHandler):
                 code=path.rsplit("/",1)[-1];s=public_session(code)
                 if not s:err("not_found","Session not found.",404)
                 self._sid=s["id"];self._public_code=code;page,nonce=overlay_html(code)
-                csp=("default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; base-uri 'none'; frame-ancestors *" if nonce is None else f"default-src 'none'; script-src 'nonce-{nonce}'; style-src 'nonce-{nonce}'; connect-src 'self'; base-uri 'none'; frame-ancestors *")
+                csp=public_content_security_policy(nonce)
                 self.send(200,page,"text/html; charset=utf-8",csp);return
             if method=="GET" and (path.startswith("/api/p10/public/") or path.startswith("/p10/public/")):
                 self.check_host()

@@ -1,9 +1,13 @@
 # Third-party components and distribution boundary
 
-This candidate contains original project source, text/configuration examples and the current HTML/CSS/JavaScript client. It contains no vendored fonts, model weights, wheels, third-party executables, credentials, databases, raw recordings or operator profiles. Exact selected files and hashes are recorded by the release preparation; no media permission is inferred from a filename.
+This candidate contains original project source, text/configuration examples and the current HTML/CSS/JavaScript client. It includes the Fraunces SemiBold font with its SIL Open Font License in client/assets/fonts/OFL.txt. It contains no model weights, wheels, third-party executables, credentials, databases, raw recordings or operator profiles. Exact selected files and hashes are recorded by the release preparation; no media permission is inferred from a filename.
 
 Python, OBS and optional Ollama/Claude services are installed or accessed separately under their respective terms. No installer or service credential is redistributed. Optional local recognition uses `faster-whisper` and the exact distributions in `scripts/ASR_REQUIREMENTS_LOCK.txt`; the model/revision/file hashes are in `scripts/ASR_MODEL_MANIFEST.json`. The existing project inventory records MIT metadata for the fixed Systran model. Retain the applicable upstream notices with any separately downloaded components; metadata is not a full native-binary audit.
 
 Optional speech uses separately installed sherpa-onnx and Piper-format voice artifacts. The existing project review records Apache-2.0 for sherpa-onnx, MIT for ONNX Runtime, GPL-3.0 for eSpeak NG, public-domain training-data provenance for the selected English LJ Speech voice and Apache-2.0 data provenance for the selected Mexican Spanish Claude voice. These are dated inventory findings, not a new grant for converted weights or clearance of the exact phonemizer archive. Verify the actual archive/component terms and retain required notices before distributing any of them. Source-only delivery does not bundle these artifacts.
 
 Demo images/video/narration have a separate exact-material review by the project owner. No historical demo or platform-mark permission is automatically carried into this candidate.
+
+## Brand typography
+
+The Fraunces Project Authors hold the bundled font copyright; its unmodified OFL notice accompanies the font. The immutable brand tokens also import Google Fonts CSS for Fraunces, Inter and JetBrains Mono. Those remote requests are a browser network dependency; unavailable requests use local/system fallbacks. No Inter/JetBrains font files are redistributed here. Brand logos/favicons are the project-provided Undertone kit artwork.

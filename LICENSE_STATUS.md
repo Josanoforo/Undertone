@@ -1,5 +1,5 @@
 # License status
 
-Original project source rights remain reserved. The existing delivery records do not select or grant MIT, Apache-2.0 or another general public license. No new grant is created by this file. The owner must confirm the intended source-distribution and judging-use terms before external release. A general open-source license is a separate owner decision; it is not an event requirement identified by this preparation.
+Original project source rights remain reserved. No MIT, Apache-2.0 or other general open-source license is granted by this repository. Public source access does not change that status.
 
-Third-party dependencies, tools, models and media retain their own terms. See [third-party notices](docs/THIRD_PARTY_NOTICES.md). A source license does not license model weights, fonts, captured platform marks, voices or demo media.
+Third-party dependencies, tools, fonts, models and media retain their own terms. See [third-party notices](docs/THIRD_PARTY_NOTICES.md) and the local voice distribution notices. The bundled Fraunces font retains its accompanying SIL Open Font License. This source tree does not bundle optional voice weights, phonemizer archives or private service accounts.

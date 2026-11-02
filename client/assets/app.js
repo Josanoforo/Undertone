@@ -1434,6 +1434,11 @@ function renderContextFreshness() {
   } else status.textContent = t("contextRefreshUnknown");
 }
 function renderSession() {
+  document.title = state.role === "creator"
+    ? "Undertone — Creator"
+    : state.role === "viewer"
+      ? "Undertone — Viewer"
+      : "Undertone";
   const s = state.session || {};
   $("#channelName").textContent =
     s.channel || s.creator_name || t("loadingSession");

@@ -1,0 +1,11 @@
+# Windows x64 / CPython 3.12 only. Python runtime distribution closure: exactly 2 wheels.
+# Hashes published by PyPI; PEP658 METADATA independently fetched and hash-verified.
+# No wheel downloaded, installed or inferred functional here. Component terms remain on HOLD.
+--require-hashes
+--only-binary=:all:
+--no-index
+
+sherpa-onnx @ https://files.pythonhosted.org/packages/2e/3c/cc251a30f1ab0a9d5c8bce9cb1db172efab45b9db1e7b4a592056807c2ff/sherpa_onnx-1.12.40-cp312-cp312-win_amd64.whl ; sys_platform == "win32" and implementation_name == "cpython" and python_version == "3.12" and (platform_machine == "AMD64" or platform_machine == "x86_64" or platform_machine == "amd64") \
+    --hash=sha256:a98c08848433af34ba0c81015f4ec1290f627d8ceec3d6d9df3380082cac408f
+sherpa-onnx-core @ https://files.pythonhosted.org/packages/5d/c1/2cb95cf8e8334e8e6dd8b1d6da010f8e5846c4f8c300a575b8e46b17e0d1/sherpa_onnx_core-1.12.40-py3-none-win_amd64.whl ; sys_platform == "win32" and implementation_name == "cpython" and python_version == "3.12" and (platform_machine == "AMD64" or platform_machine == "x86_64" or platform_machine == "amd64") \
+    --hash=sha256:506aa30d7af5e182cc90fcabe841d1abc842c195ec19dfd3cb9aec3562b9c1e0

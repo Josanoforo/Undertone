@@ -1,0 +1,9 @@
+.p12-stage { display: grid; gap: .5rem; min-width: 0; color: inherit; }
+.p12-stage details { max-width: 100%; }
+.p12-controls { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.p12-controls button, .p12-controls select { min-height: 2.75rem; }
+.p12-captions { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; max-height: min(38vh, 24rem); overflow: auto; }
+.p12-captions li { border-inline-start: .2rem solid currentColor; padding: .35rem .6rem; overflow-wrap: anywhere; }
+.p12-captions p { margin: .25rem 0; }
+.p12-stage :focus-visible { outline: .2rem solid currentColor; outline-offset: .15rem; }
+@media (orientation: landscape) and (min-width: 48rem) { .p12-stage { grid-template-columns: minmax(0, 1fr) minmax(18rem, 30%); } .p12-stage h2, .p12-stage details { grid-column: 1; } .p12-captions { grid-column: 2; grid-row: 1 / span 4; max-height: 75vh; } }

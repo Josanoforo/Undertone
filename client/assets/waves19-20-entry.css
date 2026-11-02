@@ -1,0 +1,6 @@
+.w19-guide,.w19-inbox,.w19-operator{border:1px solid #cbd2cb;border-radius:.6rem;padding:1rem;margin:1rem 0;background:#fff}.w19-guide button,.w19-inbox button,.w19-operator button{margin:.25rem}.w19-inbox article{border-top:1px solid #cbd2cb;padding:.5rem 0}.w19-guide :focus-visible,.w19-inbox :focus-visible,.w19-operator :focus-visible{outline:3px solid #174f93;outline-offset:2px}@media(max-width:480px){.w19-guide button,.w19-operator button{display:block;width:100%;margin:.4rem 0}}
+@media(max-width:480px){
+ dialog.w19-guided-context{position:fixed;inset-inline:14px auto;margin-inline:0;inline-size:calc(100vw - 28px);max-inline-size:calc(100vw - 28px)}
+ dialog.w19-guided-context .dialog-card{inline-size:100%;max-inline-size:100%;overflow-wrap:anywhere}
+ dialog.w19-guided-context .dialog-close{min-inline-size:44px;min-block-size:44px}
+}

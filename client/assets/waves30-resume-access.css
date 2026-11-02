@@ -1,0 +1,5 @@
+.w30-resume { display: grid; gap: .75rem; }
+.w30-resume form { display: grid; gap: .75rem; }
+.w30-resume label { display: grid; gap: .25rem; }
+.w30-resume input { max-width: 36rem; }
+.w30-resume :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

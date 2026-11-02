@@ -1,0 +1,49 @@
+.w27-source-list,
+.w27-selected-list {
+  display: grid;
+  gap: .75rem;
+  padding-inline-start: 1.5rem;
+}
+
+.w27-source-list > li,
+.w27-selected-list > li {
+  border: 1px solid var(--line, #3b3b45);
+  border-radius: .5rem;
+  display: grid;
+  gap: .5rem;
+  padding: .75rem;
+}
+
+.w27-source-list button,
+.w27-selected-list button,
+.w27-actions button {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+
+.w27-selected-list input {
+  max-width: 42rem;
+  width: 100%;
+}
+
+.w27-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-block: 1rem;
+}
+
+.w27-source-list button:focus-visible,
+.w27-selected-list button:focus-visible,
+.w27-selected-list input:focus-visible,
+.w27-actions button:focus-visible {
+  outline: 3px solid var(--focus, #91caff);
+  outline-offset: 2px;
+}
+
+.w27-source-list button:disabled,
+.w27-selected-list button:disabled,
+.w27-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}

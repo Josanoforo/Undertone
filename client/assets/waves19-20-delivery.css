@@ -1,0 +1,3 @@
+.w20-delivery { display: grid; gap: .65rem; margin-block: 1rem; }
+.w20-delivery label { display: grid; gap: .25rem; }
+.w20-delivery :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }

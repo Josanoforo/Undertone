@@ -1,0 +1,63 @@
+{
+  "format": 1,
+  "status": "COMPLETE_PYTHON_DISTRIBUTION_CLOSURE_METADATA_VERIFIED",
+  "target": {
+    "implementation": "CPython",
+    "python_abi": "cp312",
+    "python_version": "3.12",
+    "sys_platform": "win32",
+    "architecture": "x64",
+    "wheel_platform": "win_amd64",
+    "marker": "sys_platform == \"win32\" and implementation_name == \"cpython\" and python_version == \"3.12\" and (platform_machine == \"AMD64\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\")"
+  },
+  "roots": {
+    "sherpa-onnx": "1.12.40",
+    "sherpa-onnx-core": "1.12.40"
+  },
+  "packages": [
+    {
+      "name": "sherpa-onnx",
+      "version": "1.12.40",
+      "filename": "sherpa_onnx-1.12.40-cp312-cp312-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/2e/3c/cc251a30f1ab0a9d5c8bce9cb1db172efab45b9db1e7b4a592056807c2ff/sherpa_onnx-1.12.40-cp312-cp312-win_amd64.whl",
+      "sha256": "a98c08848433af34ba0c81015f4ec1290f627d8ceec3d6d9df3380082cac408f",
+      "size_bytes": 2168433,
+      "marker": "sys_platform == \"win32\" and implementation_name == \"cpython\" and python_version == \"3.12\" and (platform_machine == \"AMD64\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\")",
+      "requires_dist": [
+        "sherpa-onnx-core==1.12.40"
+      ],
+      "requires_python": ">=3.7",
+      "yanked": false,
+      "pypi_metadata_url": "https://pypi.org/pypi/sherpa-onnx/1.12.40/json",
+      "wheel_metadata_url": "https://files.pythonhosted.org/packages/2e/3c/cc251a30f1ab0a9d5c8bce9cb1db172efab45b9db1e7b4a592056807c2ff/sherpa_onnx-1.12.40-cp312-cp312-win_amd64.whl.metadata",
+      "wheel_metadata_sha256": "8f82db5d69b1bc71bdf0e8324c88a13a97cc82bc35dcaf618ff587129b6c46ea",
+      "wheel_bytes_downloaded": false
+    },
+    {
+      "name": "sherpa-onnx-core",
+      "version": "1.12.40",
+      "filename": "sherpa_onnx_core-1.12.40-py3-none-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/5d/c1/2cb95cf8e8334e8e6dd8b1d6da010f8e5846c4f8c300a575b8e46b17e0d1/sherpa_onnx_core-1.12.40-py3-none-win_amd64.whl",
+      "sha256": "506aa30d7af5e182cc90fcabe841d1abc842c195ec19dfd3cb9aec3562b9c1e0",
+      "size_bytes": 15633214,
+      "marker": "sys_platform == \"win32\" and implementation_name == \"cpython\" and python_version == \"3.12\" and (platform_machine == \"AMD64\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\")",
+      "requires_dist": [],
+      "requires_python": null,
+      "yanked": false,
+      "pypi_metadata_url": "https://pypi.org/pypi/sherpa-onnx-core/1.12.40/json",
+      "wheel_metadata_url": "https://files.pythonhosted.org/packages/5d/c1/2cb95cf8e8334e8e6dd8b1d6da010f8e5846c4f8c300a575b8e46b17e0d1/sherpa_onnx_core-1.12.40-py3-none-win_amd64.whl.metadata",
+      "wheel_metadata_sha256": "375bfc6ca3c657052de9c9c6670c671727b90f121e2fcf12040f027d2f723ce5",
+      "wheel_bytes_downloaded": false
+    }
+  ],
+  "requirements_file": "LOCAL_VOICE_WINDOWS_CP312.lock.txt",
+  "requirements_sha256": "186365f8b1c06a1732f38050fe8b1f24eba71c4dc8c0dbd6aa49934fa91e0ef9",
+  "closure": {
+    "distribution_count": 2,
+    "unresolved_requires_dist": [],
+    "scope": "Declared Python Requires-Dist closure for the two selected wheels; native linked libraries are not extra pip packages."
+  },
+  "bootstrap_boundary": "Evaluator-provided CPython3.12 x64 and its venv/ensurepip are prerequisites; no exact patch/OS/toolchain or bit-reproducible build claim.",
+  "native_binary_terms_cleared": false,
+  "install_or_inference_performed": false
+}

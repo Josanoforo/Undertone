@@ -1,0 +1,13 @@
+.w22-edition { display: grid; gap: .75rem; }
+.w22-edition section { border-inline-start: .2rem solid currentColor; padding-inline-start: 1rem; }
+.w22-edition label { display: block; }
+.w22-edition button, .w22-edition select { font: inherit; margin: .25rem; }
+.w22-edition :focus-visible { outline: .2rem solid currentColor; outline-offset: .15rem; }
+.w22-edition p { overflow-wrap: anywhere; }
+.w22-edition img { max-width: 100%; height: auto; }
+.w22-region-frame { position: relative; display: inline-block; max-width: 100%; }
+.w22-region-frame img { display: block; }
+.w22-region-outline { position: absolute; box-sizing: border-box; border: 3px solid #d22; outline: 2px solid #fff; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .w22-edition *, .w22-edition *::before, .w22-edition *::after { scroll-behavior: auto; animation: none; transition: none; } }
+.w22-edition .w22-caption-current { border-inline-start: .3rem solid currentColor; padding-inline-start: .65rem; font-weight: 700; }
+.w22-edition .w22-caption-now { min-height: 2.5em; }

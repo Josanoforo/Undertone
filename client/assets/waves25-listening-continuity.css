@@ -1,0 +1,4 @@
+.w25-continuity { display: grid; gap: .6rem; max-width: 48rem; }
+.w25-continuity label { display: grid; gap: .3rem; }
+.w25-continuity button, .w25-continuity select { font: inherit; max-width: 100%; }
+.w25-continuity :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

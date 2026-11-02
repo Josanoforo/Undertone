@@ -1,0 +1,8 @@
+.w19-library { border: 1px solid currentColor; border-radius: .5rem; padding: 1rem; margin-block: 1rem; }
+.w19-library article { margin-block: 1rem; padding-inline-start: .75rem; border-inline-start: .2rem solid currentColor; }
+.w19-library label { display: block; margin-block: .5rem; }
+.w19-library input, .w19-library textarea { box-sizing: border-box; max-width: 100%; }
+.w19-library textarea { display: block; width: min(100%, 40rem); min-height: 8rem; }
+.w19-library button { margin: .3rem .4rem .3rem 0; }
+.w19-library :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.w19-library p, .w19-library li { overflow-wrap: anywhere; }

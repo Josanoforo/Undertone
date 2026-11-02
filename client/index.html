@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#f4f5f2" name="theme-color"/>
+<meta content="A private space to understand, practice, and prepare interventions under the creator's control." name="description"/>
+<title>Undertone — live audience companion</title>
+<link href="/assets/app.css" rel="stylesheet"/>
+<link href="/assets/waves30-resume-access.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-moments.css" rel="stylesheet"/>
+<link href="/assets/waves27-moment-trail.css" rel="stylesheet"/>
+<link href="/assets/waves25-listening-continuity.css" rel="stylesheet"/>
+<link href="/assets/waves29-operating-view.css" rel="stylesheet"/>
+<link href="/assets/waves28-handoff.css" rel="stylesheet"/>
+<link href="/assets/waves26-terms.css" rel="stylesheet"/>
+<link href="/assets/waves27-chapters.css" rel="stylesheet"/>
+<link href="/assets/waves27-export.css" rel="stylesheet"/>
+<link href="/assets/waves26-accessibility.css" rel="stylesheet"/>
+<link href="/assets/waves26-meaning.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-listening.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-pack.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-activities.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-guide.css" rel="stylesheet"/>
+<link href="/assets/waves23-24-desk.css" rel="stylesheet"/>
+<link href="/assets/waves19-20-operator.css" rel="stylesheet"/>
+<link href="/assets/waves19-20-entry.css" rel="stylesheet"/>
+<link href="/assets/waves19-20-library.css" rel="stylesheet"/>
+<link href="/assets/waves19-20-practice.css" rel="stylesheet"/>
+  <link href="/assets/waves19-20-delivery.css" rel="stylesheet"/>
+  <link href="/assets/waves19-20-policy.css" rel="stylesheet"/>
+<link href="/assets/phase6.css" rel="stylesheet"/>
+<link href="/assets/phase10.css" rel="stylesheet"/>
+<link href="/assets/phase11.css" rel="stylesheet"/>
+<link href="/assets/phase12-collaboration.css" rel="stylesheet"/>
+<link href="/assets/phase12.css" rel="stylesheet"/>
+<link href="/assets/waves18-segment.css" rel="stylesheet"/>
+<link href="/assets/waves18-assistance.css" rel="stylesheet"/>
+<link href="/assets/waves17-18-return.css" rel="stylesheet"/>
+<link href="/assets/waves17-18-templates.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/assets/waves22-edition.css">
+<link rel="stylesheet" href="/assets/waves22-claims.css">
+</head>
+<body>
+<main id="operatorHelper" hidden></main>
+<noscript><p role="alert">JavaScript is required to use this app. Enable JavaScript and reload this page.</p></noscript>
+<a class="skip-link" data-i18n="skip" href="#main">Skip to content</a>
+<header class="topbar">
+<a data-i18n-aria-label="brandHome" aria-label="Undertone, home" class="brand" href="#audience"><span class="brand-mark">U.</span><span>undertone<span class="brand-dot">/</span></span></a>
+<div class="topbar-right">
+<span class="connection" id="connection" role="status"><i></i><span data-i18n="connecting">Connecting...</span></span>
+<label class="language"><span class="sr-only" data-i18n="language">Language</span><select data-i18n-aria-label="language" aria-label="Language" id="language">
+<option value="en" selected="selected">English</option>
+<option value="es">Español</option>
+</select></label>
+<button class="avatar" data-i18n-title="identityTitle" id="identity" title="Identity" type="button">
+          ?
+        </button>
+</div>
+</header>
+<div class="app-shell">
+<aside data-i18n-aria-label="mainNavigation" aria-label="Main navigation" class="sidebar">
+<div class="workspace-label" data-i18n="workspace">WORKSPACE</div>
+<nav class="main-nav">
+<button class="nav-item active" aria-current="page" data-view="audience">
+<span class="nav-icon">◉</span><span data-i18n="navAudience">Companion</span><span class="nav-hint">01</span>
+</button>
+<button class="nav-item" data-view="practice">
+<span class="nav-icon">↗</span><span data-i18n="navPractice">Practice</span><span class="nav-hint">02</span>
+</button>
+<button class="nav-item" data-view="studio">
+<span class="nav-icon">▤</span><span data-i18n="navStudio">Editorial studio</span><span class="nav-hint">03</span>
+</button>
+<button class="nav-item" data-view="stage">
+<span class="nav-icon">▣</span><span data-i18n="navStage">On air</span><span class="nav-hint">04</span>
+</button>
+<button class="nav-item" data-view="perspectives" data-phase6-view hidden>
+<span class="nav-icon" aria-hidden="true">◫</span><span>Perspectives</span><span class="nav-hint">05</span>
+</button>
+<button class="nav-item" data-view="work" data-phase6-view hidden>
+<span class="nav-icon" aria-hidden="true">✳</span><span>Work alongside</span><span class="nav-hint">06</span>
+</button>
+<button class="nav-item" data-view="inquiry" data-phase6-view hidden>
+<span class="nav-icon" aria-hidden="true">⌕</span><span>Inquiry</span><span class="nav-hint">07</span>
+</button>
+<button class="nav-item" data-view="project" data-phase6-view hidden>
+<span class="nav-icon" aria-hidden="true">⌂</span><span>Community project</span><span class="nav-hint">08</span>
+</button>
+<button class="nav-item" data-view="together"><span class="nav-icon" aria-hidden="true">✦</span><span>Create together</span></button>
+<button class="nav-item" data-view="collaboration"><span class="nav-icon" aria-hidden="true">◇</span><span>Collaborate</span></button>
+</nav>
+<div class="sidebar-bottom">
+<div class="channel-card">
+<div class="channel-top">
+<span class="live-dot"></span><span data-i18n="sessionActive">ACTIVE SESSION</span>
+</div>
+<strong data-i18n="loadingSession" id="channelName">Loading session...</strong><span class="muted" id="sessionPurpose"> </span><span class="muted" id="liveConnection"></span><span class="muted" id="joinCodeDisplay"></span><button class="text-button" data-i18n="copyJoinCode" id="copyJoinCode">Copy audience code &rarr;</button><button class="text-button" data-i18n="connectTwitch" id="connectTwitch">Connect Twitch metadata &rarr;</button><button class="text-button" data-i18n="sessionSettings" id="editSession">Session settings &rarr;</button>
+</div>
+<div class="privacy-note">
+<span>◈</span><span data-i18n="privateDefault">Your conversation is private by default.</span>
+</div>
+</div>
+</aside>
+<main id="main" tabindex="-1">
+<section id="wave30RoleGuide" aria-label="Workspace shortcuts" hidden></section>
+<details><summary>Guide</summary><div id="wave24Guide"></div></details>
+<section class="view" id="view-collaboration" aria-labelledby="collabTitle"><div id="p12CollaborationRoot"></div></section>
+<section class="view" id="view-together" aria-labelledby="p11Title"><div id="p11Root"></div></section>
+<section aria-labelledby="pageTitle" class="view active" id="view-audience">
+<div class="page-head">
+<div>
+<div class="eyebrow" data-i18n="liveCompanion">LIVE COMPANION</div>
+<h1 data-i18n="audienceTitle" id="pageTitle">Understand what is happening.</h1>
+<p class="lede" data-i18n="audienceLead">Ask privately. Answers use the context this session actually received.</p>
+</div>
+<span class="privacy-pill"><span>◈</span><span data-i18n="private">Private</span></span>
+</div>
+<section id="wave22EditionReader"><h2>Accessible approved edition</h2><button type="button" data-load>Refresh approved records</button><button type="button" data-delivery>Choose description listening settings</button><div data-delivery-slot></div><label>Approved record <select data-record><option value="">Choose a record</option></select></label><label>Requested language <select data-language><option value="en">English</option><option value="es">Spanish</option></select></label><p data-status role="status"></p><div data-content></div></section><div id="wave19Entry"></div><div id="wave19Answers"></div><div id="wave20Practice"></div><div id="wave22ModelExploration"></div><div id="wave22ModelHistory"></div><div id="wave22ModelWithdrawals"></div><div id="wave22ClaimsViewer"></div><div id="wave22CoeditViewer"></div>
+<div id="waveAudienceSlot"><div id="waveModelPreview"><div id="waveLocalModelPreview"></div></div></div>
+<div id="p12AudienceSlot"><div id="p12Root"></div></div>
+<div class="context-strip">
+<span class="context-icon">⌁</span>
+<div>
+<strong data-i18n="contextLabel">Session context</strong><span data-i18n="contextLoading" id="contextSummary">Checking available sources...</span><span class="provider-state" id="providerState" role="status"></span>
+</div>
+<button aria-label="View session context" class="icon-button" data-i18n-aria-label="contextView" id="contextDetails">
+              ↗
+            </button>
+</div>
+<section class="p10-panel" id="p10Viewer" aria-labelledby="p10ViewerTitle" hidden>
+<details><summary id="p10ViewerTitle">Explore exact moments</summary><p class="muted">Every result stays attached to its selected source revision and time.</p><button class="button secondary" id="p10Refresh" type="button">Refresh moments</button>
+<p class="p10-status" id="p10ViewerStatus" role="status">Loading current source moments…</p>
+<div class="field-grid"><label for="p10Topic">Topic or question</label><input id="p10Topic" maxlength="2000" placeholder="Why did the approach change?"/><label for="p10Moment">Selected moment</label><select id="p10Moment"><option value="">Choose a current moment</option></select></div>
+<div class="p10-list" id="p10Moments" aria-live="polite"></div><p id="p10OpenedMoment" class="muted" role="status"></p><div class="p10-result" id="p10TimelineAnswer" aria-live="polite"></div>
+<div class="p10-actions"><button class="button secondary" id="p10Retrieve" type="button" disabled>Find supporting moments</button><button class="button secondary" id="p10Concise" type="button" disabled>Concise</button><button class="button secondary" id="p10Detailed" type="button" disabled>Detailed</button><button class="button secondary" id="p10Translate" type="button" disabled>Translate</button><button class="button secondary" id="p10VisualDescription" type="button" disabled>Describe selected frame</button></div>
+<label for="p10Language">Requested language (BCP 47)</label><input id="p10Language" value="en" maxlength="35"/><div class="p10-result" id="p10Representation" aria-live="polite"></div>
+<details class="p10-subpanel"><summary id="p10CompareTitle">Compare authorized frames</summary><p class="muted">Frames must already exist as consented, timestamped sources. No continuous capture or narration is used.</p><div class="field-grid"><label for="p10Before">Before</label><select id="p10Before"><option value="">Choose frame moment</option></select><label for="p10After">After</label><select id="p10After"><option value="">Choose frame moment</option></select></div><label class="check-line"><input type="checkbox" id="p10RegionEnabled"/> Focus the comparison on a selected region</label><p class="muted">Coordinates are percentages from the top-left. Both full authorized frames are sent; spatial precision is uncertain.</p><div class="field-grid"><label for="p10RegionX">Left (%)</label><input id="p10RegionX" type="number" min="0" max="100" step="1" value="0"/><label for="p10RegionY">Top (%)</label><input id="p10RegionY" type="number" min="0" max="100" step="1" value="0"/><label for="p10RegionWidth">Width (%)</label><input id="p10RegionWidth" type="number" min="1" max="100" step="1" value="100"/><label for="p10RegionHeight">Height (%)</label><input id="p10RegionHeight" type="number" min="1" max="100" step="1" value="100"/></div><button class="button secondary" id="p10Compare" type="button" disabled>Compare selected frames</button><div class="p10-result" id="p10Comparison" aria-live="polite"></div></details>
+<details class="p10-subpanel"><summary id="p10MemoryTitle">Private cross-session memory</summary><p class="muted">Only you can access this vault. Its token stays in this tab’s memory and is never saved in browser storage. If you leave or reload, you must provide the token again. A new join is a separate identity; a name or code cannot recover this capability.</p><p id="p10MemoryStatus" class="p10-status" role="status">Vault access is not confirmed.</p><button class="button secondary" id="p10CreateVault" type="button">Create a new private vault</button><label for="p10VaultToken">Vault token</label><input id="p10VaultToken" type="password" autocomplete="off" maxlength="200"/><button class="button secondary" id="p10UseVault" type="button">Use token in this tab</button><label for="p10MemoryText">Your interpretation or private note</label><textarea id="p10MemoryText" maxlength="4000" rows="2" placeholder="A private note you choose to retain"></textarea><label for="p10MemoryPast">Past source statement you recorded (optional)</label><textarea id="p10MemoryPast" maxlength="4000" rows="2"></textarea><label for="p10MemoryCorrection">Your note about a current correction (optional)</label><textarea id="p10MemoryCorrection" maxlength="4000" rows="2"></textarea><label class="check-line"><input id="p10MemorySource" type="checkbox"/>Include the currently selected exact source moment (requires its active creator retention grant)</label><label id="p10MemoryGrantLabel" for="p10MemoryGrant" hidden>Active grant found for this exact moment</label><select id="p10MemoryGrant"><option value="">Choose a current exact moment first</option></select><div class="p10-actions"><button class="button secondary" id="p10SaveMemory" type="button" disabled>Save selected memory</button><button class="button secondary" id="p10LoadMemory" type="button" disabled>Load my saved items</button></div><div class="p10-list" id="p10Memories"></div><label for="p10MemoryQuery">Ask across active selected memories</label><input id="p10MemoryQuery" maxlength="2000"/><button class="button secondary" id="p10QueryMemory" type="button" disabled>Ask privately with selected memory</button><div class="p10-result" id="p10MemoryAnswer" aria-live="polite"></div></details>
+</details></section>
+<p class="muted">Search current received moments here. For source corrections, use the creator correction controls in Studio. Visual region results open their retained evidence. Return to live is available when the current session permits it.</p><div id="wave23Moments"></div><div id="wave24Activities"></div><details><summary>Channel pack</summary><p>Access and current references are checked for each action.</p><div id="wave24Pack"></div></details><p>Inspect a current moment, choose a listening profile and select a final speech segment. Availability and current access are checked before delivery.</p><div id="wave23Listening"></div><section id="wave23MomentDetail" tabindex="-1" aria-label="Selected moment detail" aria-live="polite"></section><section aria-label="Approved session records"><button class="button secondary" type="button" id="wave18ViewerRecordRefresh">Refresh approved records</button><div id="wave18ViewerRecord"></div></section><section id="catchupPanel" class="catchup-panel" aria-labelledby="catchupTitle"><div class="section-title"><div><h2 id="catchupTitle">Since you last checked</h2><p class="muted">Private, source-grounded catch-up with clear changes and reported gaps.</p></div><button class="button secondary" id="refreshCatchup" type="button">Refresh</button></div><div id="catchupTimeline" aria-live="polite"></div><label for="catchupSearch">Search received source records</label><input id="catchupSearch" type="search" maxlength="200" autocomplete="off"><p class="muted">Search covers only the received records in this interval, not the full stream.</p><div id="catchupSearchResults" aria-live="polite"></div><label for="catchupAckTarget">Reviewed through</label><select id="catchupAckTarget"><option value="">Choose a received moment</option></select><button class="button secondary" id="acknowledgeCatchup" type="button" disabled>Mark reviewed through this point</button><p id="catchupStatus" class="muted" role="status"></p><button class="button secondary" id="generateRecap" type="button">Generate catch-up recap</button><div id="catchupRecap" aria-live="polite"></div></section><section id="actionableMaterial" class="catchup-panel" aria-labelledby="activityTitle"><h2 id="activityTitle">Creator-approved learning material</h2><div id="activityContent" role="status" class="muted">A linked explanation, example, steps, and optional private attempt will appear here when an eligible exact version is presented.</div><button class="button secondary" id="tryActivity" type="button" disabled>Try this (optional)</button><button class="button secondary" id="askAboutActivity" type="button" disabled>Ask privately</button></section><section id="interventionFeedback" class="catchup-panel" aria-labelledby="feedbackTitle"><h2 id="feedbackTitle">Respond to the presented intervention</h2><p id="feedbackVersion" class="muted">No intervention version is available for a response yet. Private conversation stays private.</p><button class="button secondary" id="feedbackHelped" type="button" disabled>Helped</button><button class="button secondary" id="feedbackQuestion" type="button" disabled>Still have a question</button><button class="button secondary" id="continuePrivately" type="button">Continue privately</button></section><p id="viewerCapture" role="status" class="muted">Program context status unavailable.</p><details><summary>Saved sources and personal notebook</summary><p class="muted">Choose existing viewer-authored notes or attempts, or save your own text. Source and material references carry identifiers only and are checked again here.</p><div id="bookmarks"></div><label for="notebookText">Your private note</label><textarea id="notebookText" maxlength="4000" rows="3" placeholder="Write a note in your own words"></textarea><label for="notebookSelection">Add an existing item</label><select id="notebookSelection"><option value="">Choose your note, message, attempt, bookmark, or reference</option></select><button class="button secondary" id="saveNotebookItem" type="button">Save to notebook</button><div id="notebookItems"></div><div class="notebook-actions"><button class="button secondary" id="exportNotebook" type="button">Choose items to export</button><label class="button secondary" for="notebookImportFile">Choose notebook file<input id="notebookImportFile" type="file" accept="application/json,.json" hidden></label></div><button class="button secondary" id="recoverNotebookImport" type="button">Check earlier notebook import</button><div id="notebookPreview" aria-live="polite"></div></details><div aria-live="polite" aria-relevant="additions text" class="conversation" id="conversation">
+<div class="welcome-message">
+<div class="welcome-symbol">↗</div>
+<div>
+<strong data-i18n="welcomeTitle">Start with your question.</strong>
+<p data-i18n="welcomeBody">Ask about an idea, a moment in the stream, or a step that was unclear. You do not need to share anything.</p>
+</div>
+</div>
+</div>
+<form class="composer" id="questionForm">
+<div class="question-context">
+<label data-i18n="sources" for="questionSource">Sources</label>
+<select aria-label="Specific source" data-i18n-aria-label="exactSource" id="questionSource">
+<option data-i18n="selectedSource" value="">All current text sources</option>
+</select>
+<label data-i18n="momentLabel" for="questionMoment">Specific moment (optional)</label>
+<input id="questionMoment" maxlength="120" placeholder="00:12:34" type="text"/>
+</div>
+<label class="sr-only" data-i18n="questionLabel" for="question">Your question</label><textarea data-placeholder="questionPlaceholder" id="question" maxlength="4000" placeholder="What would you like to understand?" required="" rows="2"></textarea>
+<div class="composer-footer">
+<span class="composer-note"><span>◈</span><span data-i18n="onlyYou">Only you can see this conversation</span></span><button class="button primary" type="submit">
+<span data-i18n="send">Ask</span><span aria-hidden="true">↗</span>
+</button>
+</div>
+</form>
+<div class="inline-error" hidden="" id="audienceError" role="alert"></div>
+<details class="share-panel">
+<summary>
+<span class="share-glyph">＋</span><span><strong data-i18n="shareTitle">Would you like to bring an idea to the creator?</strong><small data-i18n="shareLead">You choose what to share, and sharing is always optional.</small></span><span class="summary-arrow">⌄</span>
+</summary>
+<div class="share-content">
+<p data-i18n="shareExplain">Review exactly what will be sent before you confirm. Your private conversation is never shared automatically.</p>
+<label data-i18n="shareSourceLabel" for="shareSource">Private contribution to summarize</label><select id="shareSource">
+<option data-i18n="shareLastQuestion" value="message">My latest question</option>
+<option data-i18n="shareLastAttempt" value="attempt">My latest practice attempt</option></select><label data-i18n="shareWhat" for="shareText">The contribution you want to share</label><textarea data-placeholder="sharePlaceholder" id="shareText" placeholder="Write only what you want the creator to receive" rows="3"></textarea><label class="check-line"><input id="shareConsent" type="checkbox"/><span data-i18n="shareConsent">I choose to share this text with the creator so they can consider it while preparing the stream.</span></label><label class="check-line"><input id="sharePublicConsent" type="checkbox"/><span data-i18n="sharePublicConsent">I also allow this to be used in a public editorial piece. I can withdraw this permission later.</span></label><label class="check-line"><input id="shareIncludeImage" type="checkbox"/><span data-i18n="shareIncludeImage">Include the image with the creator contribution; public permission remains separate.</span></label><button class="button secondary" data-i18n="shareButton" id="shareButton" type="button">Review and share</button>
+<div class="share-review" hidden="" id="shareReview"></div>
+<div aria-live="polite" class="my-shares" id="myShares"></div>
+</div>
+</details>
+</section>
+<section aria-labelledby="practiceTitle" class="view" id="view-practice">
+<div class="page-head">
+<div>
+<div class="eyebrow" data-i18n="practiceEyebrow">LEARN BY DOING</div>
+<h1 data-i18n="practiceTitle" id="practiceTitle">Try an idea in your own work.</h1>
+<p class="lede" data-i18n="practiceLead">Describe what you are working through and get guidance based on available context.</p>
+</div>
+</div>
+<form class="practice-form" id="practiceForm">
+<p id="practiceContext" role="status">Practice can use your selected question source, if available.</p>
+<div id="retrySelection" hidden role="status"><span id="retrySelectionText"></span> <button type="button" class="button secondary" id="cancelRetry">Cancel retry</button></div>
+<div class="field-grid">
+<label><span data-i18n="goalLabel">What are you trying to achieve?</span><input data-placeholder="goalPlaceholder" id="practiceGoal" maxlength="500" placeholder="For example: understand why my solution gets stuck" required=""/></label><label><span data-i18n="difficultyLabel">What feels difficult?</span><select id="practiceDifficulty">
+<option data-i18n="diffConcept" value="conceptual">Understanding the concept</option>
+<option data-i18n="diffNext" value="next-step">Knowing the next step</option>
+<option data-i18n="diffDiagnose" value="diagnosis">Finding what is wrong</option>
+<option data-i18n="diffRefine" value="refinement">Improving what I have done</option>
+</select></label>
+</div>
+<label class="field-label" data-i18n="attemptLabel" for="practiceAttempt">Tell us what you have tried so far</label><textarea data-placeholder="attemptPlaceholder" id="practiceAttempt" maxlength="6000" placeholder="Describe your attempt in your own words" required="" rows="5"></textarea>
+<p id="practiceActivityPrompt" class="muted" hidden></p>
+<div class="upload-row">
+<div>
+<strong data-i18n="attachments">Optional attachments</strong><span data-i18n="attachmentHelp">Text and files depend on the modalities this session supports.</span>
+</div>
+<label class="button secondary file-label">＋ <span data-i18n="addFile">Add files</span><input hidden="" id="practiceFiles" type="file"/></label>
+</div>
+<div aria-live="polite" class="file-list" id="fileList"></div>
+<p class="muted visual-notice" hidden="" id="visualNotice"></p>
+<button class="button primary" type="submit">
+<span data-i18n="getHint">Get a hint</span><span>↗</span>
+</button>
+<div class="inline-error" hidden="" id="practiceError" role="alert"></div>
+</form>
+<div class="practice-history"><h2>Compare two attempts</h2><p class="muted">Compare your own text and feedback; this is not a grade.</p><div class="field-grid"><label>First attempt<select id="compareFirst"></select></label><label>Second attempt<select id="compareSecond"></select></label></div><button type="button" class="button secondary" id="compareAttempts">Compare</button><div id="comparison" aria-live="polite"></div>
+<div class="section-title">
+<h2 data-i18n="practiceHistory">Your attempts</h2>
+<span class="muted" data-i18n="privateHistory">Only you can see these</span>
+</div>
+<div class="history-list" id="practiceHistoryList">
+<p class="empty-state" data-i18n="historyEmpty">Your guidance and retries will appear here.</p>
+</div>
+</div>
+</section>
+<section aria-labelledby="studioTitle" class="view" id="view-studio">
+<div class="page-head">
+<div>
+<div class="eyebrow" data-i18n="creatorWorkspace">CREATOR WORKSPACE</div>
+<h1 data-i18n="studioTitle" id="studioTitle">Prepare something worth sharing.</h1>
+<p class="lede" data-i18n="studioLead">Review authorized contributions and decide what belongs in your program.</p>
+</div>
+<button class="button secondary" id="refreshStudio">
+<span>↻</span><span data-i18n="refresh">Refresh</span>
+</button>
+</div>
+<section id="w20CreatorPracticeReader"><h2>Selected practice result</h2><p>Enter the result ID supplied by its viewer. Refresh to check current availability.</p><label>Result ID <input data-id autocomplete="off" maxlength="128"></label><button type="button" data-read>Read or refresh result</button><p data-status role="status"></p><p data-result></p></section><div id="wave20Delivery"></div><div id="wave21Speech"></div><div id="wave21Visual"></div><div id="wave21ImpactPreview"></div><div id="wave22ModelShares"></div><div id="wave22ClaimsCreator"></div><div id="wave22Coedit"></div><div id="wave20Policy"></div><div id="wave19Library"></div><div id="wave19Setup"></div><div id="wave19Operator"></div><div id="wave19Inbox"></div>
+<section id="wave22DescriptionCreator" aria-label="Edition description"><h2>Edition description</h2><button type="button" data-refresh>Refresh approved records</button><label>Edition <select data-edition><option value="">Choose an edition</option></select></label><label>Language <select data-language><option value="en">English</option><option value="es">Spanish</option></select></label><label>Approved description record <select data-narration><option value="">Choose a record</option></select></label><label>Visual region <select data-region><option value="">Choose a region</option></select></label><button type="button" data-select>Select description</button><button type="button" data-withdraw>Withdraw description</button><button type="button" data-recover>Check previous description action</button><p role="status" data-status></p></section>
+<section aria-label="Reviewed creator records"><button class="button secondary" type="button" id="wave18CreatorRecordRefresh">Refresh reviewed records</button><div id="wave18CreatorRecord"></div></section>
+<section aria-label="Segment workspace controls"><button class="button secondary" type="button" id="wave18Refresh">Refresh segment workspace</button> <button class="button secondary" type="button" id="wave18Speech">Open bilingual text and audio controls</button><div id="wave18Segment"></div></section>
+<section aria-label="Segment assistance controls"><button class="button secondary" type="button" id="wave18AssistanceRefresh">Refresh assistance for selected context</button><div id="wave18Assistance"></div></section>
+<div id="waveCreatorSlot"></div>
+<div id="p12CreatorSlot"></div>
+<details>
+<summary>Session invitation and operations</summary>
+<p id="lifecycleStatus" role="status" aria-live="polite"></p>
+<p class="muted" data-i18n="renewedInviteKeepsViewers">Renewing changes the invitation code and deadline; viewers with valid existing access keep their private history.</p>
+<p class="muted" data-i18n="renewedInviteNewIdentity">A new join creates separate private history. A name, code, or link cannot restore a lost or revoked viewer access.</p>
+<p><span data-i18n="invitationUrlLabel">Invitation link for new joins</span>: <code id="invitationUrlValue">—</code></p>
+<p>Current-device preview: <a id="localPreviewInvitation">—</a>. This link is for this device; external reachability is not established.</p>
+<button type="button" class="button primary" data-i18n="renewInvitation" id="renewInvitation">Renew invitation</button>
+<button type="button" class="button secondary" data-i18n="rotateInvitation" id="rotateInvitation">Rotate and revoke viewer access</button>
+<button type="button" class="button secondary" data-i18n="refreshInvitationState" id="refreshInvitationState">Refresh invitation and URL status</button>
+<p>This ends access for everyone, including the public view. Stored data is retained until explicitly deleted.</p>
+<button type="button" class="button danger" id="closeSession">Close session</button>
+<button type="button" class="button danger" id="cleanupSession">Delete session data</button>
+<div id="operations" role="status"></div><button type="button" class="button secondary" id="refreshOperations">Refresh operations</button>
+</details><section class="p10-panel" id="p10Studio" aria-labelledby="p10StudioTitle" hidden>
+<details><summary id="p10StudioTitle">Source-connected creator materials</summary><p class="muted">Indexing classifies already received sources. Pasted text is not treated as live ingestion. Consent and visibility remain explicit.</p>
+<p class="muted">To prepare a moment for the audience, use Live context to add an authorized image with known frame timing and opt in to audience visibility. Then refresh here, choose that source, and select “Index this source moment”. For a transcribed source, enter an interval matching complete recorded speech segments. A text note alone has no verified timing; do not guess an interval. The audience can refresh moments and choose the indexed result.</p>
+<p id="p10StudioStatus" class="p10-status" role="status">Current source state unavailable.</p><div class="p10-list" id="p10Grants" aria-live="polite"></div><label for="p10StudioSource">Eligible audience-visible source</label><select id="p10StudioSource"><option value="">Choose an exact source revision</option></select>
+<div id="wave26Terms"></div>
+<div id="wave27Chapters"></div>
+<h3>Choose exact moments for indexing, retention consent, or materials</h3><p class="muted">Every choice shows its complete source, revision, moment, and time interval. The viewer vault remains private and is not shown here.</p><div class="p10-list" id="p10StudioMoments" aria-live="polite"></div>
+<div class="field-grid"><label for="p10Start">Start time (milliseconds)</label><input type="number" min="0" id="p10Start"/><label for="p10End">End time (milliseconds)</label><input type="number" min="0" id="p10End"/><label for="p10Kind">Event type</label><select id="p10Kind"><option value="question">Question</option><option value="decision">Decision</option><option value="demonstration">Demonstration</option><option value="correction">Correction</option><option value="other">Other</option></select></div>
+<div class="p10-actions"><button class="button secondary" id="p10Index" type="button" disabled>Index this source moment</button><button class="button secondary" id="p10Grant" type="button" disabled>Grant selected source retention</button></div>
+<h3>Request a suggestion from current context</h3><p class="muted">Select current exact moments above and explain what you want and why. The selected references are the source for the request, not proof that every suggested claim is supported. The result is an untrusted, editable draft: check it against those sources, then preview and approve the exact version before using a production cue. You may reject it by withdrawing it. Nothing is approved, cued, presented, or published by requesting a suggestion. Withdrawal cannot recall external copies.</p>
+<div class="field-grid"><label for="p10Format">Format</label><select id="p10Format"><option value="guide">Guide</option><option value="explanation">Explanation</option><option value="faq">FAQ</option><option value="exercise">Exercise</option></select><label for="p10Instruction">Your request and reason for this suggestion</label><textarea id="p10Instruction" maxlength="2000" rows="2" placeholder="What would help here, and why? Keep claims close to the selected sources."></textarea></div>
+<button class="button secondary" id="p10Derive" type="button" disabled>Request suggestion from selected moments</button><button class="button secondary" id="p10DraftStatus" type="button">Check draft request</button><div class="p10-list" id="p10Materials"></div><div class="p10-result" id="p10MaterialPreview" aria-live="polite"></div>
+</details></section>
+<section id="productionCues" class="p10-panel" aria-label="Production cues"></section>
+<div id="workbenchChanges"></div><div class="studio-stats" id="studioStats"></div>
+<button type="button" class="button secondary" id="analyzeContributions">Analyze shared contributions</button><div class="provider-state" id="insightStatus" role="status"></div>
+<div class="contribution-list" id="contributions">
+<div class="empty-state" data-i18n="studioLoading">Loading shared contributions...</div>
+</div>
+<div class="editorial-builder">
+<div class="builder-head">
+<div>
+<div class="eyebrow" data-i18n="EDITORIAL DESK">EDITORIAL DESK</div>
+<h2 data-i18n="builderTitle">Prepare an intervention</h2>
+</div>
+<span class="approval-pill" data-i18n="creatorControls">Creator controlled</span>
+</div>
+<p class="muted" data-i18n="builderLead">Select authorized contributions to contextualize and prepare a usable piece.</p>
+<div class="builder-controls">
+<label><span data-i18n="formatLabel">Format</span><select id="editorialFormat">
+<option data-i18n="formatExplanation" value="explanation">Explanation</option>
+<option data-i18n="formatComparison" value="comparison">Comparison</option>
+<option data-i18n="formatQuestion" value="question">Audience question</option>
+<option data-i18n="formatExample" value="example">Example</option>
+<option data-i18n="formatVisual" value="visual">Visual material</option>
+<option data-i18n="formatDemonstration" value="demonstration">Demonstration</option>
+</select></label><label><span data-i18n="focusLabel">Editorial focus (optional)</span><input data-placeholder="focusPlaceholder" id="editorialFocus" maxlength="500" placeholder="What should the audience take away?"/></label>
+</div>
+<button class="button primary" id="createEditorial" type="button">
+<span data-i18n="createDraft">Prepare draft</span><span>↗</span>
+</button>
+<div class="inline-error" hidden="" id="editorialError" role="alert"></div>
+<div class="editorial-draft" hidden="" id="editorialDraft"></div>
+</div>
+</section>
+<section aria-labelledby="stageTitle" class="view" id="view-stage">
+<div class="page-head">
+<div>
+<div class="eyebrow" data-i18n="publicSurface">PUBLIC SURFACE</div>
+<h1 data-i18n="stageTitle" id="stageTitle">On air.</h1>
+<p class="lede" data-i18n="stageLead">This view shows only an intervention approved and published by the creator.</p>
+</div>
+<span class="privacy-pill public-pill"><span>◉</span><span data-i18n="public">Public</span></span>
+</div>
+<div class="stage-preview" id="stagePreview">
+<div class="stage-empty">
+<span class="stage-mark">e.</span>
+<p data-i18n="stageEmpty">There is no approved and published intervention to show.</p>
+<small data-i18n="stageEmptyHint">Approval does not publish a piece: it appears here only after the creator approves and publishes it.</small>
+</div>
+</div>
+<div class="stage-actions">
+<div>
+<strong data-i18n="captureTitle">Live context</strong>
+<p data-i18n="captureLead">Capture starts only after an explicit action by the creator and can be stopped at any time.</p>
+<span class="capture-status" data-i18n="captureStopped" id="captureStatus" role="status">Capture stopped</span>
+</div>
+<div class="capture-controls">
+<button class="button secondary" data-i18n="manageSources" id="manageSources" type="button">Manage sources</button>
+<button class="button secondary" data-i18n="startCapture" id="startCapture" type="button">Start capture</button><button class="button danger" data-i18n="stopCapture" disabled="" id="stopCapture" type="button">Stop</button>
+</div>
+</div>
+<div class="live-audio" hidden="" id="liveAudioControls">
+<p>Stopping discards the current and queued segments. An in-flight segment may already have been received.</p>
+<h2 data-i18n="liveAudioTitle">Live audio</h2>
+<p data-i18n="liveAudioConsentLead">Audio is sent to the service for transcription. If you allow the audience, it can read each complete shared transcript.</p>
+<label><span data-i18n="audioSourceLabel">Audio source</span><select id="liveAudioSource">
+<option data-i18n="audioMicrophone" value="microphone">Microphone</option>
+<option data-i18n="audioDisplay" value="display">Audio from a shared tab or screen</option>
+</select></label><label><span>Program source label</span><input id="programSourceLabel" maxlength="120" placeholder="For example: authorized program mix"/></label><label class="check-line"><input id="programAudioIntent" type="checkbox"/><span>This source is the authorized live program audio, and I intend to share completed transcripts with the audience.</span></label><label class="check-line"><input id="liveAudioConsent" type="checkbox"/><span data-i18n="audioConsent">I agree to capture this audio and send separate segments to the transcription service.</span></label><label class="check-line"><input id="liveAudioAudience" type="checkbox"/><span data-i18n="audioAudience">Allow the audience to read each complete transcript source. Off by default.</span></label>
+<label class="check-line"><input id="p12RetainAudio" type="checkbox"/><span>Retain original audio for authorized session playback (optional).</span></label>
+<label>Audio file <input id="p12AudioFile" type="file" accept="audio/*"/></label><button class="button secondary" id="p12UploadAudio" type="button">Transcribe audio file</button>
+<div class="audio-actions">
+<button class="button secondary" data-i18n="startAudio" id="startLiveAudio" type="button">Start audio</button><button class="button danger" data-i18n="stopAudio" disabled="" id="stopLiveAudio" type="button">Stop audio</button><span aria-live="polite" class="muted" id="liveAudioStatus" role="status"></span>
+</div>
+</div>
+<div class="stage-url">
+<span data-i18n="stageUrlLabel">Public Browser Source URL</span><code id="stageUrlValue">—</code><button class="button secondary" data-i18n="copyUrl" id="copyStageUrl" type="button">Copy URL</button>
+</div>
+<div class="inline-error" hidden="" id="stageError" role="alert"></div>
+</section>
+<section aria-labelledby="p6PerspectivesTitle" class="view p6-view" data-phase6-view hidden id="view-perspectives">
+<div class="page-head"><div><div class="eyebrow">SHARED READINGS</div><h1 id="p6PerspectivesTitle">Perspectives</h1><p class="lede">Different readings can remain different. Review does not grant permission to quote or publish.</p></div><span class="privacy-pill">Consent stays specific</span></div>
+<p class="p6-service-state" data-p6-status role="status">Phase 6 records are unavailable in this session. Nothing here is being saved or shared.</p>
+<section class="p6-card" data-p6-role="viewer" aria-labelledby="p6MyReadingTitle">
+<h2 id="p6MyReadingTitle">Your reading</h2><p class="muted">Start from an eligible source revision. Your private draft stays separate from a submitted reading.</p>
+<form data-p6-form="reading-draft"><label for="p6ReadingSource">Source and exact revision</label><select id="p6ReadingSource" disabled><option>No eligible source is available</option></select>
+<label for="p6ReadingText">Your interpretation</label><textarea id="p6ReadingText" maxlength="4000" rows="3" placeholder="What is one way to read this moment?" data-p6-input></textarea>
+<label for="p6ReadingReason">Why do you read it this way?</label><textarea id="p6ReadingReason" maxlength="4000" rows="3" placeholder="Add the reason that supports your reading." data-p6-input></textarea>
+<fieldset><legend>Separate permissions</legend><label class="check-line"><input type="checkbox" data-p6-input><span>I allow the creator to review this submitted reading.</span></label><label class="check-line"><input type="checkbox" data-p6-input><span>I allow this reading to be quoted in a public version.</span></label><label class="check-line"><input type="checkbox" data-p6-input><span>I allow this exact reading to be considered across sessions.</span></label>
+<label for="p6Attribution">If selected for public use, choose the attribution you allow</label><select id="p6Attribution" data-p6-input><option value="name">My chosen name label</option><option value="pseudonym">My pseudonym</option><option value="unattributed">Unattributed</option></select><label for="p6AttributionLabel">Chosen name label (when selected)</label><input id="p6AttributionLabel" maxlength="100" data-p6-input><label for="p6Pseudonym">Chosen pseudonym (when selected)</label><input id="p6Pseudonym" maxlength="100" data-p6-input></fieldset>
+<div class="p6-actions"><button class="button secondary" id="p6ReadingSave" type="button" disabled>Save private draft</button><button class="button primary" id="p6ReadingSubmit" type="button" disabled>Submit reading for review</button></div><p class="muted">A draft stays private. Review, public quotation, attribution and cross-session use are separate choices.</p></form>
+<label for="p6DestinationProject">Destination project ID for a separate cross-session grant</label><input id="p6DestinationProject" maxlength="128" data-p6-input><h3>Origin grants</h3><div id="p6Grants" class="p6-list"><div class="p6-empty">No grants are available.</div></div><h3>Your readings</h3><div id="p6MyReadings" class="p6-list"><div class="p6-empty">Reading records are loading.</div></div></section>
+<section class="p6-card" data-p6-role="creator" aria-labelledby="p6ReviewTitle"><h2 id="p6ReviewTitle">Creator review</h2><p class="muted">Keep each reason visible, including disagreement and singleton perspectives. Do not rank readings as truth or consensus.</p>
+<div id="p6ReadingReviewList" class="p6-list"><div class="p6-empty">Submitted readings are loading.</div></div><label for="p6GroupLabel">Group label</label><input id="p6GroupLabel" maxlength="100" data-p6-input><label for="p6GroupRationale">Why these readings are grouped</label><textarea id="p6GroupRationale" rows="3" data-p6-input></textarea><label for="p6Disagreement">What remains different?</label><textarea id="p6Disagreement" rows="3" data-p6-input></textarea><label for="p6GroupSelection">Readings in this rationale group</label><select id="p6GroupSelection" multiple size="5"></select><button class="button secondary" id="p6SaveGroup" type="button" disabled>Save rationale group</button>
+<h3>Exact editorial version</h3><label for="p6PresentationTitle">Version title</label><input id="p6PresentationTitle" maxlength="160" data-p6-input><div id="p6PresentationSelection" class="p6-list"></div><label for="p6PresentationSelect">Existing presentation</label><select id="p6PresentationSelect"></select><div class="p6-actions"><button class="button secondary" id="p6PresentationCreate" type="button" disabled>Create selected version</button><button class="button secondary" id="p6PresentationNewVersion" type="button" disabled>Save new exact version</button><button class="button secondary" id="p6PresentationApprove" type="button" disabled>Approve exact version</button><button class="button primary" id="p6PresentationPresent" type="button" disabled>Present exact version</button><button class="button danger" id="p6PresentationWithdraw" type="button" disabled>Withdraw presentation</button></div></section>
+<section class="p6-card" data-p6-role="viewer" aria-labelledby="p6PublicReadingTitle"><h2 id="p6PublicReadingTitle">Presented perspectives</h2><p class="muted">Only an eligible, selected, approved and presented exact version belongs here.</p><div id="p6PublicReadings" class="p6-list"><div class="p6-empty">No public perspective version is available.</div></div><h3>Presented inquiry report</h3><div id="p6PublicInquiries" class="p6-list"><div class="p6-empty">No public inquiry version is available.</div></div></section>
+</section>
+<section aria-labelledby="p6WorkTitle" class="view p6-view" data-phase6-view hidden id="view-work">
+<div class="page-head"><div><div class="eyebrow">PRIVATE COACTIVITY</div><h1 id="p6WorkTitle">Work alongside</h1><p class="lede">Keep your own activity separate from Practice. You choose the activity, state and time.</p></div><span class="privacy-pill">Private by default</span></div>
+<p class="p6-service-state" data-p6-status role="status">Your Work alongside records are unavailable in this session. Nothing here is being saved or shared.</p>
+<section class="p6-card" data-p6-role="viewer" aria-labelledby="p6WorkSetupTitle"><h2 id="p6WorkSetupTitle">Your activity</h2><form data-p6-form="work"><label for="p6Activity">What are you working on?</label><textarea id="p6Activity" maxlength="2000" rows="3" data-p6-input></textarea><div class="p6-grid"><label for="p6DeclaredState">Your current state</label><input id="p6DeclaredState" maxlength="500" data-p6-input><label for="p6Minutes">Time available (minutes)</label><input id="p6Minutes" type="number" min="1" max="480" data-p6-input></div><label for="p6WorkSource">Optional stream context</label><select id="p6WorkSource" disabled><option>No eligible context is available</option></select><div class="p6-actions"><button type="button" class="button primary" data-p6-action="work-create" disabled>Create private activity</button><button type="button" class="button secondary" data-p6-action="work-save" disabled>Save private edits</button></div>
+<h3>Prepared next step</h3><p class="muted">A manual prompt asks you to write a concrete action. You may request an editable AI proposal explicitly; no generation happens on pause, return or reload.</p><label for="p6Step">Edit your next step</label><textarea id="p6Step" maxlength="4000" rows="3" data-p6-input></textarea><div class="p6-actions"><button type="button" class="button secondary" data-p6-action="work-prepare" disabled>Open manual step prompt</button><button type="button" class="button secondary" data-p6-action="work-generate" disabled>Generate tailored step (AI)</button><button type="button" class="button secondary" data-p6-action="work-generate-reentry" disabled>Generate re-entry step (AI)</button><button type="button" class="button primary" data-p6-action="work-accept" disabled>Accept step</button><button type="button" class="button secondary" data-p6-action="work-start" disabled>Start</button><button type="button" class="button secondary" data-p6-action="work-pause" disabled>Pause</button><button type="button" class="button secondary" data-p6-action="work-return" disabled>Return with changed state</button><button type="button" class="button secondary" data-p6-action="work-resume" disabled>Resume</button><button type="button" class="button danger" data-p6-action="work-end" disabled>End</button></div><div id="p6Coactivities" class="p6-list"><div class="p6-empty">Private activity records are loading.</div></div></form></section>
+<section class="p6-card" data-p6-role="viewer" aria-labelledby="p6WorkShareTitle"><h2 id="p6WorkShareTitle">Optional, separate sharing</h2><p class="muted">Choose a specific result, preview the exact derivative and grant sharing separately. Private activity is never carried into a new session.</p><label for="p6WorkResult">Selected result</label><textarea id="p6WorkResult" maxlength="2000" rows="3" data-p6-input></textarea><div id="p6WorkSharePreview" class="p6-list"><div class="p6-empty">No share preview is available.</div></div><label class="check-line"><input type="checkbox" id="p6WorkShareConsent" data-p6-input><span>I grant sharing for this selected result only.</span></label><div class="p6-actions"><button type="button" class="button secondary" id="p6WorkSharePreviewButton" disabled>Preview selected result</button><button type="button" class="button primary" id="p6WorkShareConfirm" disabled>Confirm share</button></div></section><section class="p6-card" data-p6-role="creator" aria-labelledby="p6CreatorSharesTitle"><h2 id="p6CreatorSharesTitle">Viewer-shared results</h2><p class="muted">Only explicit active derivatives appear here. Private coactivity stays private.</p><div id="p6CreatorShares" class="p6-list"><div class="p6-empty">Shared results are loading.</div></div></section>
+</section>
+<section aria-labelledby="p6InquiryTitle" class="view p6-view" data-phase6-view hidden id="view-inquiry">
+<div class="page-head"><div><div class="eyebrow">CREATOR-LED EXAMINATION</div><h1 id="p6InquiryTitle">Inquiry</h1><p class="lede">A comparison plan is a proposal. An observation appears only after a person records one.</p></div><span class="privacy-pill">Creator controlled</span></div>
+<p class="p6-service-state" data-p6-status role="status">Inquiry records are unavailable in this session. No observation has been recorded here.</p>
+<section class="p6-card" data-p6-role="creator" aria-labelledby="p6InquiryPlanTitle"><h2 id="p6InquiryPlanTitle">Question and comparison plan</h2><form data-p6-form="inquiry"><label for="p6InquiryQuestion">Question</label><textarea id="p6InquiryQuestion" maxlength="2000" rows="2" data-p6-input></textarea><div class="p6-grid"><fieldset><legend>Explanation A</legend><label for="p6AltA">Alternative</label><input id="p6AltA" maxlength="500" data-p6-input><label for="p6PredA">Prediction</label><textarea id="p6PredA" rows="2" data-p6-input></textarea></fieldset><fieldset><legend>Explanation B</legend><label for="p6AltB">Alternative</label><input id="p6AltB" maxlength="500" data-p6-input><label for="p6PredB">Prediction</label><textarea id="p6PredB" rows="2" data-p6-input></textarea></fieldset></div><label for="p6Discriminator">What would distinguish these predictions?</label><textarea id="p6Discriminator" rows="2" data-p6-input></textarea><label for="p6Procedure">Comparison procedure</label><textarea id="p6Procedure" rows="3" data-p6-input></textarea><label for="p6InquirySource">Exact source and revision (optional)</label><select id="p6InquirySource" disabled><option>No eligible source is available</option></select><div class="p6-actions"><button type="button" id="p6InquirySave" class="button secondary" disabled>Save plan draft</button><button type="button" id="p6InquiryAccept" class="button primary" disabled>Accept plan</button></div></form></section>
+<section class="p6-card" data-p6-role="creator" aria-labelledby="p6ObservationTitle"><h2 id="p6ObservationTitle">Record a human observation</h2><p class="muted">Generated suggestions are not observations. Conflicting reports remain distinct; no physical truth is inferred.</p><div class="p6-empty" data-p6-observation-empty>No observation has been recorded.</div><div id="p6ObservationList" class="p6-list"><div class="p6-empty">Observation history is loading.</div></div><form data-p6-form="observation"><label for="p6ObservationText">What did you observe?</label><textarea id="p6ObservationText" maxlength="3000" rows="3" data-p6-input></textarea><div class="p6-grid"><label for="p6ObservationOrigin">Source kind</label><select id="p6ObservationOrigin" data-p6-input><option value="">Choose source kind</option><option value="creator_observation">Creator-entered observation</option><option value="source_report">Report from an exact session source</option></select><label for="p6ObservedAt">When was it observed? Leave blank if unknown.</label><input id="p6ObservedAt" type="datetime-local" data-p6-input></div><label for="p6Method">Method</label><textarea id="p6Method" rows="2" data-p6-input></textarea><label for="p6Uncertainty">Uncertainty</label><textarea id="p6Uncertainty" rows="2" data-p6-input></textarea><label for="p6Limitations">Limitations</label><textarea id="p6Limitations" rows="2" data-p6-input></textarea><label for="p6ObservationSource">Exact source and revision (required for a source report)</label><select id="p6ObservationSource" disabled><option>No eligible source is available</option></select><fieldset><legend>Separate optional uses</legend><label class="check-line"><input type="checkbox" data-p6-consent><span>Allow exact observation material to be selected for editorial review.</span></label><label class="check-line"><input type="checkbox" data-p6-consent><span>Allow exact observation material to be considered for this project.</span></label><label class="check-line"><input type="checkbox" data-p6-consent><span>Allow cross-session use under an explicit origin grant.</span></label></fieldset><p class="muted">An entered observation is labeled as user-reported, not independently verified.</p><button type="button" id="p6ObservationRecord" class="button primary" disabled>Record observation</button></form><h3>Next examination</h3><p class="muted">No next examination is available until a person records an observation and reviews the changed plan.</p><div class="p6-empty">No changed examination is available.</div><h3>Cross-session grant for a selected observation</h3><label for="p6ObservationDestinationProject">Destination project ID</label><input id="p6ObservationDestinationProject" maxlength="128" data-p6-input><h3>Inquiry editorial version</h3><label for="p6InquiryPresentationTitle">Exact version title</label><input id="p6InquiryPresentationTitle" maxlength="160" data-p6-input><div id="p6InquiryPresentationSelection" class="p6-list"></div><label for="p6InquiryPresentationSelect">Existing presentation</label><select id="p6InquiryPresentationSelect"><option value="">Choose a presentation</option></select><div class="p6-actions"><button type="button" id="p6InquiryPresentationCreate" class="button secondary" disabled>Create selected version</button><button type="button" id="p6InquiryPresentationVersion" class="button secondary" disabled>Save new exact version</button><button type="button" id="p6InquiryPresentationApprove" class="button secondary" disabled>Approve exact version</button><button type="button" id="p6InquiryPresentationPresent" class="button primary" disabled>Present exact version</button><button type="button" id="p6InquiryPresentationWithdraw" class="button danger" disabled>Withdraw presentation</button></div><div id="p6CreatorInquiryPresentations" class="p6-list"></div></section>
+</section>
+<section aria-labelledby="p6ProjectTitle" class="view p6-view" data-phase6-view hidden id="view-project">
+<div class="page-head"><div><div class="eyebrow">QUESTION AND OUTCOME WORKSPACE</div><h1 id="p6ProjectTitle">Community project</h1><p class="lede">A project continues across broadcasts only through explicit authority. A project pointer grants no access.</p></div><span class="privacy-pill">Scoped access</span></div>
+<p class="p6-service-state" data-p6-status role="status">No authorized project state is available in this session.</p>
+<section class="p6-card" data-p6-role="creator" aria-labelledby="p6ProjectAuthorityTitle"><h2 id="p6ProjectAuthorityTitle">Project authority and session link</h2><p id="p6ProjectTitleDisplay" class="p6-empty">Project identity and binding status are unavailable.</p><div id="p6ProjectLinkRequests" class="p6-list"></div><div id="p6OwnerLinks" class="p6-list"></div><div class="p6-grid"><label for="p6ProjectName">Project name</label><input id="p6ProjectName" maxlength="160" data-p6-input><label for="p6ProjectQuestion">Open project question</label><textarea id="p6ProjectQuestion" maxlength="4000" rows="2" data-p6-input></textarea><p class="muted">The named project authority is separate from the session creator. Enter owner mode deliberately before using a stored project capability.</p><label class="check-line"><input id="p6OwnerMode" type="checkbox" data-p6-input><span>Enter named project-owner mode for this browser identity</span></label><label class="check-line"><input id="p6OwnerPersist" type="checkbox" data-p6-input><span>Explicitly save this new owner capability on this device for later visits</span></label><button type="button" id="p6OwnerForget" class="button danger" disabled>Forget this project owner capability</button><label for="p6DestinationSession">Later session</label><input id="p6DestinationSession" maxlength="128" data-p6-input></div><fieldset><legend>Requested access for this binding</legend><label class="check-line"><input type="checkbox" data-p6-input data-p6-link-scope="creator.read"><span>Creator can read current project state</span></label><label class="check-line"><input type="checkbox" data-p6-input data-p6-link-scope="creator.propose"><span>Creator can submit a proposal</span></label><label class="check-line"><input type="checkbox" data-p6-input data-p6-link-scope="creator.decide"><span>Creator can decide/apply only when also holding owner capability</span></label><label class="check-line"><input type="checkbox" data-p6-input data-p6-link-scope="viewer.read"><span>Viewers in that session can read</span></label><label class="check-line"><input type="checkbox" data-p6-input data-p6-link-scope="viewer.propose"><span>Viewers in that session can propose</span></label></fieldset><p class="muted">Both project authority and destination creator must explicitly authorize a server-side link. No credential is copied here.</p><div class="p6-actions"><button type="button" id="p6ProjectCreate" class="button primary" disabled>Create project</button><button type="button" id="p6ProjectLinkCreate" class="button secondary" disabled>Request session link</button></div></section>
+<section class="p6-card" data-p6-role="both" aria-labelledby="p6ProjectStateTitle"><h2 id="p6ProjectStateTitle">Current typed project state</h2><p class="muted">Questions, selected plans, explicitly shared observations, qualified decisions and next actions.</p><div id="p6ProjectState" class="p6-list"><div class="p6-empty">No authorized project state is available.</div></div><h3>Next available app action</h3><div id="p6NextActionView" class="p6-list"><div class="p6-empty">No project action is available in this session.</div></div><h3>Change history</h3><div id="p6ProjectHistory" class="p6-list"><div class="p6-empty">Project history is unavailable.</div></div><h3>Imported exact references</h3><div id="p6ProjectImports" class="p6-list"><div class="p6-empty">No imported references are available.</div></div></section>
+<section class="p6-card" data-p6-role="both" aria-labelledby="p6ProposalTitle"><h2 id="p6ProposalTitle">Propose and review a change</h2><label for="p6ProjectOperation">Allowed typed operation</label><select id="p6ProjectOperation" data-p6-input><option value="">Choose an operation</option><option value="select_plan">Select a comparison plan</option><option value="supersede_plan">Supersede selected plan</option><option value="attach_observation">Attach eligible shared observation</option><option value="record_decision">Record qualified decision</option><option value="open_action">Open a next action</option><option value="complete_action">Complete a next action</option><option value="reopen_action">Reopen a next action</option></select><div data-p6-role="creator"><h3>Import authorized content (destination creator only)</h3><label for="p6ExactOriginSession">Exact origin session ID</label><input id="p6ExactOriginSession" maxlength="128" data-p6-input><label for="p6ExactKind">Reference kind</label><select id="p6ExactKind" data-p6-input><option value="reading">Reading</option><option value="observation">Observation</option></select><label for="p6ExactObjectId">Origin object ID</label><input id="p6ExactObjectId" maxlength="128" data-p6-input><label for="p6ExactObjectRevision">Origin object revision</label><input id="p6ExactObjectRevision" type="number" min="1" data-p6-input><label for="p6ExactGrantId">Origin grant ID</label><input id="p6ExactGrantId" maxlength="128" data-p6-input><button type="button" id="p6ProjectImport" class="button secondary" disabled>Import selected authorized reference</button></div><label for="p6ProposalReason">Reason for the proposed change</label><textarea id="p6ProposalReason" rows="3" data-p6-input></textarea><label for="p6DecisionQualification">Qualification and limits (for a decision)</label><textarea id="p6DecisionQualification" rows="2" data-p6-input></textarea><label for="p6ExpectedRevision">Expected project revision</label><input id="p6ExpectedRevision" inputmode="numeric" disabled><label for="p6ProposalContent">Typed change content</label><textarea id="p6ProposalContent" rows="2" data-p6-input></textarea><label for="p6NextAction">Next app action (for a qualified decision)</label><input id="p6NextAction" maxlength="500" data-p6-input><label for="p6ActionId">Action ID (for an existing action transition)</label><select id="p6ActionId"><option value="">Choose an action</option></select><div class="p6-grid"><div><h3>Before</h3><div id="p6BeforePreview" class="p6-empty">Current state unavailable.</div></div><div><h3>Proposed after</h3><div id="p6AfterPreview" class="p6-empty">Proposal preview unavailable.</div></div></div><label for="p6ProposalSelect">Proposal for owner review</label><select id="p6ProposalSelect"><option value="">Choose a proposal</option></select><div id="p6ProposalList" class="p6-list"></div><p class="muted">Exact source provenance and any unavailable or revoked evidence must be shown before a decision.</p><div class="p6-actions"><button type="button" id="p6ProposalPreview" class="button secondary" disabled>Preview proposal</button><button type="button" id="p6ProposalSubmit" class="button primary" disabled>Propose</button><button type="button" id="p6ProposalAccept" class="button secondary" disabled>Accept</button><button type="button" id="p6ProposalApply" class="button primary" disabled>Apply</button><button type="button" id="p6ProposalReverse" class="button danger" disabled>Reverse with compensating change</button><button type="button" id="p6ProposalReject" class="button secondary" disabled>Reject</button></div><p class="muted">Each action requires deliberate confirmation and current expected revisions. A stale conflict needs explicit recovery; source revocation does not silently reverse an authority decision.</p></section>
+</section>
+</main>
+</div>
+<dialog id="accessDialog" aria-labelledby="accessDialogTitle">
+<div id="resumeAccess"></div>
+<form class="dialog-card" id="accessForm">
+<button aria-label="Close" class="dialog-close" data-i18n-aria-label="close" id="accessClose" type="button">
+          ×
+        </button>
+<div class="eyebrow" data-i18n="accessEyebrow">LOCAL ACCESS</div>
+<h2 id="accessDialogTitle" data-i18n="accessTitle">Join a session</h2>
+<p>Choose your role. Viewers need the session ID and invitation code from the creator. Conversations remain private until you choose to share.</p><p>After a reload, choose a saved access below or resume access for this tab.</p><div class="saved-identities" id="savedIdentities"></div>
+<section id="operatorEntry" aria-label="Prepare-only access"><details><summary>Helper preparation access</summary><p>Enter the session and preparation capability provided by the creator. This access cannot approve or present.</p><label>Session ID <input id="operatorSession" autocomplete="off"></label><label>Preparation capability <input id="operatorCapability" type="password" autocomplete="off"></label><button type="button" id="operatorEnter">Open helper view</button><p id="operatorEntryStatus" role="status"></p></details></section>
+<div class="access-tabs">
+<button class="access-tab active" data-access="join" data-i18n="viewerTab" type="button">Viewer · join with a code</button><button class="access-tab" data-access="create" data-i18n="creatorTab" type="button">Creator · start locally</button>
+</div>
+<div id="joinFields">
+<label for="invitationPaste">Paste a complete invitation</label><textarea autocomplete="off" id="invitationPaste" rows="2" placeholder="Paste the full invitation link or copied invitation block"></textarea><button class="button secondary" id="prepareInvitation" type="button">Prepare invitation</button><p class="muted">Review the session ID and code below, then choose Join session. Preparing does not verify the invitation or restore prior private history.</p>
+<label><span data-i18n="sessionIdLabel">Session ID</span><input autocomplete="off" id="joinSessionId" maxlength="100" required=""/></label><label><span data-i18n="joinCodeLabel">Session code</span><input autocomplete="off" id="joinCode" maxlength="80" required=""/></label><label><span data-i18n="displayNameLabel">Display name (optional)</span><input id="displayName" maxlength="80"/></label><p class="muted" data-i18n="renewedInviteNewIdentity">A new join creates separate private history. A name, code, or link cannot restore a lost or revoked viewer access.</p>
+</div>
+<div hidden="" id="createFields">
+<label><span data-i18n="sessionTitleLabel">Stream title</span><input id="newTitle" maxlength="160"/></label><label><span data-i18n="channelLabel">Channel or creator</span><input id="newChannel" maxlength="120" placeholder="jonasoforo"/></label><label><span data-i18n="purposeLabel">Stream purpose</span><textarea id="newPurpose" maxlength="2000" rows="3"></textarea>
+</label>
+<p class="muted" data-i18n="localCreateNote">Session creation is available only in local deployments.</p>
+</div>
+<button class="button primary" data-i18n="joinSession" id="accessSubmit" type="submit">Join session</button>
+<div class="inline-error" hidden="" id="accessError" role="alert"></div><p class="muted">An invitation can expire or be replaced, and a session can close. Ask the creator for a current invitation. Saved access works only while its capability remains valid.</p><div id="creatorRecovery" hidden><p>This creator access can only be used to delete retained session data locally. Normal session access is unavailable.</p><p id="recoverySession"></p><button type="button" class="button danger" id="recoveryCleanup">Delete retained session data</button></div><div id="privateDataControls" hidden><button type="button" class="button danger" id="deletePrivateData">Delete my private session data</button><p>Deletes your conversations and bookmarks and withdraws your contributions. This cannot be undone.</p></div>
+</form>
+</dialog>
+<dialog id="sessionDialog" aria-labelledby="sessionDialogTitle">
+<form class="dialog-card" id="sessionForm" method="dialog">
+<button aria-label="Close" class="dialog-close" data-i18n-aria-label="close" id="sessionClose" type="button">
+          ×
+        </button>
+<div class="eyebrow" data-i18n="sessionSetup">SESSION</div>
+<h2 id="sessionDialogTitle" data-i18n="sessionDetails">Session details</h2>
+<label><span data-i18n="channelLabel">Channel or creator</span><input id="sessionChannel" maxlength="120" required=""/></label><label><span data-i18n="purposeLabel">Stream purpose</span><textarea id="sessionPurposeInput" maxlength="2000" rows="3"></textarea></label><label><span data-i18n="materialsLabel">Reference materials (links or text)</span><textarea id="sessionMaterials" maxlength="5000" rows="3"></textarea></label><label class="check-line"><input id="materialsAudienceVisible" type="checkbox"/><span data-i18n="materialsAudienceConsent">Allow the session audience to read this complete source as context.</span></label>
+<div class="dialog-actions">
+<button class="button secondary" data-i18n="cancel" id="sessionCancel" type="button">Cancel</button><button class="button primary" data-i18n="saveSession" id="saveSession" type="submit">Save session</button>
+</div>
+<div class="inline-error" hidden="" id="sessionError" role="alert"></div>
+</form>
+</dialog>
+<dialog id="contextDialog" aria-labelledby="contextDialogTitle">
+<div class="dialog-card">
+<button aria-label="Close" class="dialog-close" data-i18n-aria-label="close" id="closeContext">
+          ×
+        </button>
+<div class="eyebrow" data-i18n="contextLabel">Session context</div>
+<h2 id="contextDialogTitle" data-i18n="sourcesTitle">Available sources</h2>
+<p class="muted" id="contextFreshness" data-i18n="contextRefreshUnknown" role="status" aria-live="polite">Context status unavailable.</p><button class="button secondary" id="refreshContext" data-i18n="contextRefreshButton" type="button">Refresh context</button><div class="source-list" id="contextSources"></div>
+<p class="muted" data-i18n="sourceNote">Answers distinguish received context from what is still unknown.</p>
+</div>
+</dialog>
+<dialog id="captureDialog" aria-labelledby="captureDialogTitle">
+<form class="dialog-card" id="captureForm">
+<button aria-label="Close" class="dialog-close" data-i18n-aria-label="close" id="captureClose" type="button">
+          ×
+        </button>
+<div class="eyebrow" data-i18n="captureConsentEyebrow">MANUAL CAPTURE</div>
+<h2 id="captureDialogTitle" data-i18n="captureConsentTitle">Add context with permission</h2>
+<p class="muted" data-i18n="captureConsentLead">The image or note you choose will be saved as session context. No screen or audio is captured automatically.</p>
+<p class="muted visual-notice" hidden="" id="captureVisualNotice"></p>
+<label><span data-i18n="captureTitleLabel">Title</span><input id="captureSourceTitle" maxlength="160"/></label><label><span data-i18n="captureTextLabel">Context note (optional)</span><textarea id="captureSourceText" maxlength="5000" rows="3"></textarea>
+</label>
+<div class="screen-capture-controls" id="screenCaptureControls">
+<button class="button secondary" data-i18n="chooseScreen" id="chooseScreen" type="button">Choose screen or window</button><button class="button secondary" data-i18n="captureFrame" disabled="" id="captureFrame" type="button">Capture frame</button><button class="button danger" data-i18n="stopScreen" hidden="" id="stopScreen" type="button">Stop screen sharing</button><span class="muted" id="screenStatus" role="status"></span>
+</div>
+<video autoplay="" hidden="" id="screenPreview" muted="" playsinline=""></video><img alt="Selected frame" data-i18n-alt="selectedFrame" hidden="" id="screenFramePreview"/><label id="captureImageLabel"><span data-i18n="captureImageLabel">Image you choose (PNG, JPEG or WebP; up to 4 MB)</span><input accept="image/png,image/jpeg,image/webp" id="captureImage" type="file"/></label><fieldset class="p10-capture-timing"><legend>Optional frame timing</legend>
+<p class="muted">A screen frame can fill browser-reported timing when you capture it. For an uploaded image, enter timing only if you know it. These values do not prove a live feed or physical time and do not align audio from another run. Without timing, the capture can be saved but cannot be indexed as a timed frame.</p>
+<label class="check-line"><input id="captureTimingEnabled" type="checkbox"/>Include reported timing for this image</label>
+<label for="captureTimingUtc">Capture instant (ISO UTC, for example 2026-10-30T06:00:00Z)</label><input id="captureTimingUtc" type="text" maxlength="40" autocomplete="off"/>
+<label for="captureTimingOffset">Offset in this run (milliseconds)</label><input id="captureTimingOffset" type="text" inputmode="numeric" maxlength="9" autocomplete="off"/>
+<label for="captureTimingRun">Capture run ID</label><input id="captureTimingRun" type="text" maxlength="128" autocomplete="off"/>
+</fieldset><label class="check-line"><input id="captureConsent" type="checkbox"/><span data-i18n="captureConsentCheck">I confirm I am authorized to share this content in the session.</span></label><label class="check-line"><input id="captureAudienceVisible" type="checkbox"/><span data-i18n="captureAudienceConsent">Allow the session audience to read this complete source as context.</span></label>
+<div class="dialog-actions">
+<button class="button secondary" data-i18n="cancel" id="captureCancel" type="button">Cancel</button><button class="button primary" data-i18n="submitCapture" id="captureSubmit" type="submit">Add context</button>
+</div>
+<div class="inline-error" hidden="" id="captureError" role="alert"></div>
+</form>
+</dialog>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+<script src="/assets/app.js" type="module"></script>
+</body>
+</html>

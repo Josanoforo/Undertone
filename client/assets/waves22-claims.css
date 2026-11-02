@@ -1,0 +1,5 @@
+.w22-claims { min-width: 0; overflow-wrap: anywhere; }
+.w22-claim { border: 1px solid currentColor; padding: .75rem; margin-block: .75rem; }
+.w22-claim textarea { display: block; box-sizing: border-box; width: 100%; min-height: 5rem; }
+.w22-claims button { max-width: 100%; margin: .25rem; }
+.w22-claims button:focus-visible, .w22-claims textarea:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

@@ -1,0 +1,7 @@
+.w28-conflict { display: grid; gap: .75rem; max-width: 48rem; }
+.w28-conflict fieldset { display: grid; gap: .6rem; }
+.w28-conflict label { display: grid; grid-template-columns: auto 1fr; gap: .35rem .6rem; align-items: start; }
+.w28-conflict label span { grid-column: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.w28-conflict button { justify-self: start; }
+.w28-conflict :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.w28-conflict [role="status"] { min-height: 1.5em; }

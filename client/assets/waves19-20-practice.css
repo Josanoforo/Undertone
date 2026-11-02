@@ -1,0 +1,8 @@
+.w20-practice { border: 1px solid currentColor; border-radius: .5rem; padding: 1rem; margin-block: 1rem; }
+.w20-practice article { margin-block: 1rem; padding-inline-start: .75rem; border-inline-start: .2rem solid currentColor; }
+.w20-practice label { display: block; margin-block: .5rem; }
+.w20-practice textarea { display: block; box-sizing: border-box; width: min(100%, 40rem); min-height: 6rem; }
+.w20-practice fieldset { min-width: 0; }
+.w20-practice button { margin: .3rem .4rem .3rem 0; }
+.w20-practice :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.w20-practice p { overflow-wrap: anywhere; }

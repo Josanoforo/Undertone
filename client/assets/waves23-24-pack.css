@@ -1,0 +1,10 @@
+.channel-pack { padding: 1rem; }
+.channel-pack section { margin-block: 1rem; }
+.channel-pack h2, .channel-pack h3 { margin-block: .5rem; }
+.channel-pack [role="status"] { margin-block: .5rem; min-height: 1.5em; }
+.channel-pack label { display: block; margin-block: .6rem; }
+.channel-pack label input, .channel-pack label select { display: block; max-width: 100%; }
+.channel-pack textarea { display: block; box-sizing: border-box; width: 100%; min-height: 9rem; }
+.channel-pack button { margin: .3rem .4rem .3rem 0; }
+.channel-pack :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+.channel-pack .pack-item { border-block-start: 1px solid currentColor; padding-block: .5rem; overflow-wrap: anywhere; }

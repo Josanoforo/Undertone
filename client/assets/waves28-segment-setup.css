@@ -1,0 +1,4 @@
+.segment-setup { display: grid; gap: .75rem; }
+.segment-setup button, .segment-setup select { font: inherit; padding: .45rem; }
+.segment-setup button:focus-visible, .segment-setup select:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+.segment-setup-item { border-inline-start: .25rem solid currentColor; padding-inline-start: .75rem; }

@@ -1,0 +1,23 @@
+# Runtime and private evaluator state
+/.runtime/
+/data/
+/sessions/
+/reports/
+/.venv*/
+/venv/
+/node_modules/
+/client/dist/
+**/__pycache__/
+*.py[cod]
+*.log
+*.sqlite*
+*.db
+*.dpapi
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+# Generated packages and historical operational records
+/docs/delivery/waves30/exports/
+/docs/delivery/package/releases/

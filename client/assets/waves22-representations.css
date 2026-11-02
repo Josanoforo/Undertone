@@ -1,0 +1,10 @@
+.w22-representations { display: grid; gap: 1rem; min-width: 0; }
+.w22-representations fieldset, .w22-representations article { min-width: 0; }
+.w22-representations .w22-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: .6rem; }
+.w22-representations label { display: grid; gap: .25rem; min-width: 0; }
+.w22-representations input { max-width: 100%; box-sizing: border-box; }
+.w22-representations table { border-collapse: collapse; max-width: 100%; }
+.w22-representations th, .w22-representations td { border: 1px solid currentColor; padding: .3rem; text-align: left; }
+.w22-representations .w22-swatch { display: inline-block; width: 3rem; height: 2rem; border: 1px solid currentColor; vertical-align: middle; }
+.w22-representations button { margin: .25rem .4rem .25rem 0; }
+.w22-representations :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }

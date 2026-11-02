@@ -1,0 +1,3 @@
+.w20-policy { display: grid; gap: .65rem; margin-block: 1rem; }
+.w20-policy form, .w20-policy fieldset, .w20-policy label { display: grid; gap: .4rem; }
+.w20-policy :focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }

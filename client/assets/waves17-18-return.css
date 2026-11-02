@@ -1,0 +1,4 @@
+.w17-return fieldset { margin: 1rem 0; }
+.w17-return textarea { display: block; width: 100%; max-width: 42rem; }
+.w17-return-change { border-top: 1px solid currentColor; margin-top: 1rem; padding-top: .5rem; }
+.w17-return-change h4 { text-transform: capitalize; }

@@ -1,0 +1,45 @@
+.w24-activities {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.w24-activities summary {
+  cursor: pointer;
+}
+
+.w24-activities :is(summary, select, input, textarea, button):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.w24-activities label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.w24-activity-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.5rem;
+  margin-block: 0.75rem;
+}
+
+.w24-reviewed-record,
+.w24-demonstrations article {
+  border: 1px solid currentColor;
+  border-radius: 0.4rem;
+  padding: 0.75rem;
+  margin-block: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.w24-reviewed-record p,
+.w24-demonstrations p,
+.w24-activities pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.w24-reviewed-record li + li {
+  margin-block-start: 0.75rem;
+}

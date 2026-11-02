@@ -1,0 +1,24 @@
+{
+  "config": {
+    "available": false,
+    "model": "eleven_multilingual_v2",
+    "model_version": "",
+    "voice_id": "",
+    "voice_version": "",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "stock_voice_verified": false,
+    "rights_verified": false,
+    "format_verified": false
+  },
+  "account_verified": false,
+  "quota_verified": false,
+  "credential_available": false,
+  "quota_characters": 0,
+  "usd_per_character": "0",
+  "max_usd": "0",
+  "pricing_revision": "",
+  "verification_revision": ""
+}

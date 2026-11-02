@@ -1,0 +1,4 @@
+.audience-guide { display: grid; gap: .75rem; }
+.audience-guide ol { display: grid; gap: .5rem; padding-inline-start: 1.5rem; }
+.audience-guide-controls { display: flex; flex-wrap: wrap; gap: .5rem; }
+.audience-guide button:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }

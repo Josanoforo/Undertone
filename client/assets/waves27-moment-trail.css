@@ -1,0 +1,5 @@
+.moment-trail27 { display: grid; gap: .6rem; }
+.moment-trail27 ol { display: grid; gap: .5rem; padding-inline-start: 1.5rem; }
+.moment-trail27 li { line-height: 1.5; }
+.moment-trail27 button { margin-inline-end: .5rem; }
+.moment-trail27 button:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }

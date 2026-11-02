@@ -1,0 +1,6 @@
+{
+  "name": "audience-companion",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": { "start": "python -m server" }
+}

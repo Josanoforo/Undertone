@@ -1,0 +1,57 @@
+[
+  {
+    "id": "example-question-round",
+    "version": 1,
+    "intent": "A bounded preference between two distinct options. A selection is not a claim that either feature is already implemented.",
+    "steps": [
+      "Choose an option or watch; review the result before deciding."
+    ],
+    "definition": {
+      "type": "choice",
+      "title": "Choose the next demo",
+      "question": "Which small feature should the next fictional demo explain first?",
+      "options": [
+        "Keyboard shortcuts",
+        "Saved drafts"
+      ],
+      "cards": []
+    }
+  },
+  {
+    "id": "example-comparison-board",
+    "version": 1,
+    "intent": "Cards are proposals, not mutually exclusive answers. A distinct alternative or minority reason remains distinct even when one proposal has more support.",
+    "steps": [
+      "Invite optional reasons and alternatives; preserve distinct minority views."
+    ],
+    "definition": {
+      "type": "structured_board",
+      "title": "Make the next demo easier to follow",
+      "question": "Which proposed change would help you follow a short live demo? Add a reason or a different idea if needed.",
+      "options": [],
+      "cards": [
+        "Show one step at a time",
+        "Keep a visible example on screen",
+        "Pause for questions between steps"
+      ]
+    }
+  },
+  {
+    "id": "example-voluntary-supported-practice",
+    "version": 1,
+    "intent": "An optional bounded recall question; decline or skip is valid. This is not a graded course, fluency judgment, or general model-quality score.",
+    "steps": [
+      "Offer optional practice; skipping is always valid."
+    ],
+    "definition": {
+      "type": "choice",
+      "title": "Optional practice: check a revision",
+      "question": "The approved note says revision 8 is current. Which revision should this example use?",
+      "options": [
+        "Revision 8",
+        "Revision 7"
+      ],
+      "cards": []
+    }
+  }
+]

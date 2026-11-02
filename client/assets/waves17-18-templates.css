@@ -1,0 +1,8 @@
+.w17-templates { border: 1px solid currentColor; border-radius: .5rem; padding: 1rem; margin-block: 1rem; }
+.w17-templates article, .w17-templates section { margin-block: 1rem; padding-inline-start: .75rem; border-inline-start: .2rem solid currentColor; }
+.w17-templates label { display: block; margin-block: .5rem; }
+.w17-templates input:not([type=checkbox]), .w17-templates textarea, .w17-templates select { max-width: 100%; }
+.w17-templates textarea { display: block; width: min(100%, 40rem); min-height: 5rem; }
+.w17-templates button { margin: .3rem .4rem .3rem 0; }
+.w17-templates :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.w17-templates pre { white-space: pre-wrap; overflow-wrap: anywhere; }

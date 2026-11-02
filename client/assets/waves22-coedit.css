@@ -1,0 +1,6 @@
+.w22-coedit { display: grid; gap: .75rem; max-width: 48rem; }
+.w22-coedit label { display: grid; gap: .35rem; }
+.w22-coedit textarea { box-sizing: border-box; width: 100%; min-height: 10rem; font: inherit; }
+.w22-coedit button { margin: .25rem .5rem .25rem 0; }
+.w22-coedit :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.w22-coedit [role="status"] { min-height: 1.5em; }

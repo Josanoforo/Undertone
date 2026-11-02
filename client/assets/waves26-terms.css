@@ -1,0 +1,5 @@
+.w26-terms { display: grid; gap: .6rem; max-width: 52rem; min-width: 0; overflow-wrap: anywhere; }
+.w26-terms input { font: inherit; max-width: 100%; box-sizing: border-box; }
+.w26-terms h2, .w26-terms h3, .w26-terms p { margin-block: .25rem; }
+.w26-terms button { font: inherit; max-width: 100%; }
+.w26-terms :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

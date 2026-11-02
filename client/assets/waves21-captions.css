@@ -1,0 +1,7 @@
+.w21-captions { max-width: 72rem; overflow-wrap: anywhere; }
+.w21-captions li { margin-block: .8rem; }
+.w21-captions button { max-width: 100%; }
+.w21-captions li { border-inline-start: .3rem solid currentColor; padding-inline-start: .8rem; }
+.w21-caption-provisional { border-inline-start-style: dashed !important; font-style: italic; }
+.w21-caption-correction { border-inline-start-style: double !important; }
+.w21-caption-gap { border-inline-start-style: dotted !important; }

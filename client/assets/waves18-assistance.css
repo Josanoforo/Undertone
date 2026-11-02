@@ -1,0 +1,7 @@
+.w18-assistance { border: 1px solid #777; padding: 1rem; margin-block: 1rem; }
+.w18-assistance fieldset, .w18-assistance article { margin-block: 1rem; padding: .8rem; border: 1px solid #777; }
+.w18-assistance label { display: block; margin-block: .55rem; }
+.w18-assistance input:not([type="checkbox"]), .w18-assistance textarea { display: block; width: min(100%, 44rem); box-sizing: border-box; }
+.w18-assistance textarea { min-height: 5rem; }
+.w18-assistance button { margin: .25rem .5rem .25rem 0; }
+.w18-assistance :focus-visible { outline: 3px solid #a16207; outline-offset: 2px; }

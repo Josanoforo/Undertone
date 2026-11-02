@@ -1,0 +1,4 @@
+.handoff28 { display: grid; gap: .6rem; }
+.handoff28 label { display: grid; gap: .25rem; max-width: 32rem; }
+.handoff28 div { display: flex; flex-wrap: wrap; gap: .5rem; }
+.handoff28 :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }

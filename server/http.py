@@ -1312,6 +1312,7 @@ class Handler(BaseHTTPRequestHandler):
             sub=parts[3:]
             with store.LOCK:
                 ctx=phase10_common.Context(self,sid,a)
+                status=200
                 if sub==["inspect"] and method=="POST":
                     body=self.body()
                     if not isinstance(body,dict) or not {"ref","targetLanguage"}<=set(body) or set(body)-{"ref","targetLanguage","translationRequestId","regionId","associationId"}:
@@ -1332,8 +1333,25 @@ class Handler(BaseHTTPRequestHandler):
                         err("invalid_request","Select a flag revision.",422)
                     result=meaning.revise_flag(ctx,sub[1],body["revision"],body["field"],body["note"],body["requestId"])
                     if meaning.get_flag(ctx,result["id"])!=result:err("stale_context","Flag changed; check its original receipt.",409)
+                elif sub==["shares"] and method=="POST":
+                    # All common readers/derived paths are reconciled in
+                    # OLA26_FLAG_CONTRIBUTION_20261102/CORRECTED_PROPOSAL.md.
+                    # Keep current authority through projection and final send.
+                    from . import waves26_flag_contribution as contribution
+                    result=contribution.share(ctx,self.body())
+                    contribution.final_guard(ctx,result["id"],result)
+                    status=201
+                elif len(sub)==2 and sub[0]=="share-receipts" and method=="GET":
+                    from . import waves26_flag_contribution as contribution
+                    result=contribution.receipt(ctx,sub[1])
+                    if contribution.receipt(ctx,sub[1])!=result:
+                        err("stale_context","The original share is unavailable.",409)
+                elif len(sub)==2 and sub[0]=="shares" and method=="DELETE":
+                    from . import waves26_flag_contribution as contribution
+                    result=contribution.revoke(ctx,sub[1])
+                    ctx.check_actor()
                 else:err("not_found","Meaning route unavailable.",404)
-                self.send(200,result)
+                self.send(status,result)
             return
         if parts[1:]==["w26","terminology","inspect"] and method=="POST":
             from . import waves26_term_inspection as inspection

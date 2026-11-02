@@ -5,6 +5,7 @@ import { renderWorkspaceGuide } from './waves30-workspace-guide.js';
 import { looksLikeInvitation, parseInvitationSearch, parseInvitationText } from './invitation-input.mjs';
 import { mountTerms } from './waves26-terms.js';
 import { mountMeaning } from './waves26-meaning.js';
+import { createFlagSharingHost } from './waves26-flag-sharing.js';
 import { mountVisualAssociations } from './waves26-visual-selection.js';
 import { mountEdition } from './waves22-edition.js';
 import { mountApprovedExport, downloadApprovedChapter } from './waves27-export.js';
@@ -427,6 +428,9 @@ const API = (() => {
     w26MeaningInspect: () => [`${sessionPath()}/w26/meaning/inspect`, "POST"],
     w26VisualAssociations: () => [`${sessionPath()}/w26/visual-associations/list`, "POST"],
     w26MeaningFlag: () => [`${sessionPath()}/w26/meaning/flags`, "POST"],
+    w26MeaningShare: () => [`${sessionPath()}/w26/meaning/shares`, "POST"],
+    w26MeaningShareReceipt: id => [`${sessionPath()}/w26/meaning/share-receipts/${encodeURIComponent(id)}`, "GET"],
+    w26MeaningShareRevoke: id => [`${sessionPath()}/w26/meaning/shares/${encodeURIComponent(id)}`, "DELETE"],
     w22Claims: () => [`${sessionPath()}/w22/claims`, "POST"],
     w22ModelShares: () => [`${sessionPath()}/w22/models/shares`, "GET"],
     w22ModelOwnedShares: () => [`${sessionPath()}/w22/models/owned-shares`, "GET"],
@@ -5168,13 +5172,17 @@ const wave23Listening = (() => {
     stopDescription: () => phase12Controller?.stopDelivery(),
     returnFocus: ctx => (ctx.returnButton || accessibilityOpen).focus()
   });
-  const meaning = mountMeaning(meaningRoot, {isCurrent: candidate => {
+  const meaningCurrent = candidate => {
     try {
       if (!candidate || candidate !== meaningSelection || !active || candidate.ticket !== generation) return false;
       assertIdentity(active.scope);
       return normalizeList(state.context?.sources || state.context).some(x => x.id === candidate.ref.sourceId && x.revision === candidate.ref.sourceRevision && x.status === 'active' && x.audienceVisible === true);
     } catch { return false; }
-  }, newRequestId: () => crypto.randomUUID(), createFlag: async (candidate, request) => {
+  };
+  const flagSharing = createFlagSharingHost({getOwner:() => active, isCurrent:meaningCurrent,
+    assertIdentity:assertSavedIdentity, sameRef:sameMomentRef, call:(...args) => API.call(...args)});
+  const meaning = mountMeaning(meaningRoot, {...flagSharing, isCurrent:meaningCurrent,
+    newRequestId: () => crypto.randomUUID(), createFlag: async (candidate, request) => {
     const owner = active;
     if (!owner || candidate !== meaningSelection || state.role !== 'viewer' || !owner.scope.viewerId || !owner.scope.actorBinding || !owner.scope.sessionId) throw Error('Current saved viewer required');
     assertSavedIdentity(owner.scope);

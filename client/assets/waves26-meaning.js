@@ -40,6 +40,38 @@ export function mountMeaning(root, host) {
     const sharingReady = host.flagShareReady === true && typeof host.shareFlag === 'function' && typeof host.revokeFlagShare === 'function' && typeof host.newRequestId === 'function' && typeof s.ref.sessionId === 'string';
     line(form, 'Sharing:', sharingReady ? 'Share explicitly sends this saved note to the current session creator. You can revoke it.' : 'Unavailable until an authorized source-bound contribution and revocation authority is connected.');
     let sharedId = null, shareAttempted = false, revokeAttempted = false;
+    const pendingShare = sharingReady && typeof host.pendingShare === 'function' ? host.pendingShare(s) : null;
+    if (pendingShare) {
+      shareAttempted = !['complete','unavailable'].includes(pendingShare.state);
+      if (pendingShare.sameSelection === false) line(form, 'Earlier share:', 'The saved receipt belongs to an earlier selected source, not this note.');
+      if (pendingShare.state === 'complete' && typeof pendingShare.shareId === 'string') {
+        sharedId = pendingShare.shareId; revoke.disabled = false;
+        status.textContent = 'The previously selected note is shared with the session creator.';
+      } else if (pendingShare.state === 'pending' && typeof pendingShare.requestId === 'string' && typeof host.recoverShare === 'function') {
+        const check = el('button', 'Check original share receipt'); check.type = 'button'; form.append(check);
+        status.textContent = 'A selected share is unconfirmed. Check its original receipt; it will not be sent again.';
+        check.addEventListener('click', async () => {
+          if (pending || !valid(s, e)) return;
+          pending = true; check.disabled = true;
+          try {
+            const result = await host.recoverShare(s, pendingShare.requestId);
+            if (!valid(s, e)) return;
+            if (['failed','cancelled'].includes(result?.state) && result.shareId == null) {
+              shareAttempted = false; share.disabled = !flag || !sharingReady; check.remove();
+              status.textContent = 'The original share is unavailable and was not sent again. Save and explicitly select a new current note to share.';
+            } else {
+              if (result?.state !== 'complete' || typeof result.shareId !== 'string') throw Error('Unconfirmed share');
+              sharedId = result.shareId; revoke.disabled = false; check.remove();
+              status.textContent = 'The original share was confirmed with the session creator.';
+            }
+          } catch { if (valid(s, e)) status.textContent = 'The original share remains unconfirmed. No new share was sent.'; }
+          finally { if (valid(s, e)) { pending = false; check.disabled = false; } }
+        });
+      } else if (pendingShare.state === 'unavailable') {
+        if (typeof pendingShare.shareId === 'string') { sharedId = pendingShare.shareId; revoke.disabled = false; }
+        status.textContent = 'The original share is unavailable and was not sent again. Save and explicitly select a new current note to share.';
+      } else status.textContent = 'An earlier share or revocation needs reconciliation. No new share will be sent.';
+    }
     share.addEventListener('click', async () => {
       if (!sharingReady || !flag || pending || shareAttempted || !valid(s, e)) return;
       const requestId = host.newRequestId();
@@ -84,7 +116,7 @@ export function mountMeaning(root, host) {
         catch (error) { if (!valid(s, e)) return; if (error?.outcome !== 'unknown' || typeof host.recoverFlag !== 'function') throw error; result = await host.recoverFlag(s, request); }
         if (!valid(s, e)) return;
         if (!result || result.visibility !== 'private' || JSON.stringify(result.ref) !== JSON.stringify(s.ref) || result.field !== request.field || result.note !== request.note || typeof result.id !== 'string' || !Number.isInteger(result.revision)) throw new Error('invalid receipt');
-        flag = result; share.disabled = !sharingReady; status.textContent = 'Private note saved.';
+        flag = result; share.disabled = !sharingReady || shareAttempted; status.textContent = 'Private note saved.';
       } catch (_) { if (valid(s, e)) status.textContent = 'Could not confirm the private note. Check its original receipt before trying again.'; }
       finally { if (valid(s, e)) { pending = false; save.disabled = true; } }
     });

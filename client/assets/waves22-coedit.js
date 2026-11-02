@@ -1,5 +1,6 @@
 /* Coauthor draft controls and recovery; see owner HANDOFF.md. */
 import { diffConflict } from './waves28-conflict.js';
+import { createProtectedCoeditJournal } from './waves22-protected-journal.js';
 export function mountCoeditSetup(root, {identity, assertIdentity, grant, create, openCreated}) {
   const details = document.createElement('details');
   const summary = document.createElement('summary'); summary.textContent = 'Create a coauthor draft';
@@ -67,9 +68,13 @@ export function mountCoeditSetup(root, {identity, assertIdentity, grant, create,
     reset() { generation++; form.reset(); button.disabled = false; status.textContent = ''; }
   };
 }
-export function mountCoeditAccess(root, {identity, assertIdentity, list, revokeGrant, read, readOperation, mutate, openDesk}) {
+export function mountCoeditAccess(root, {identity, assertIdentity, assertReadIdentity = assertIdentity, recoveryMode = () => 'saved', list, revokeGrant, read, readOperation, readAdoptionOperation, mutate, openDesk}) {
   const details = document.createElement('details');
+  details.dataset.protectedCoedit = '';
   const summary = document.createElement('summary'); summary.textContent = 'Open a coauthor draft';
+  const protectedLabel = document.createElement('label'), protectedOptIn = document.createElement('input');
+  protectedOptIn.type = 'checkbox'; protectedLabel.append(protectedOptIn,document.createTextNode('Keep encrypted pending coauthor changes in this tab'));
+  const protectedHelp = document.createElement('p'); protectedHelp.textContent = 'Access stays in memory. After reloading, enter the same access and enable this option again to check the original receipt. Closing the tab ends this recovery.';
   const form = document.createElement('form');
   const label = document.createElement('label'); label.textContent = 'Draft ID';
   const input = document.createElement('input'); input.required = true; input.maxLength = 128; label.append(input);
@@ -79,8 +84,100 @@ export function mountCoeditAccess(root, {identity, assertIdentity, list, revokeG
   const loadGrants = document.createElement('button'); loadGrants.type = 'button'; loadGrants.textContent = 'Find my coauthor drafts';
   const recoverGrant = document.createElement('button'); recoverGrant.type = 'button'; recoverGrant.textContent = 'Recover prior access revocation';
   const grants = document.createElement('div');
-  const content = document.createElement('div'); form.append(label,button); details.append(summary,loadGrants,recoverGrant,grants,form,recover,status,content); root.append(details);
-  let generation = 0, editor = null;
+  const content = document.createElement('div'); form.append(label,button); details.append(summary,protectedLabel,protectedHelp,loadGrants,recoverGrant,grants,form,recover,status,content); root.append(details);
+  let generation = 0, editor = null, protectedJournal = null;
+  const isProtected = () => recoveryMode() === 'protected';
+  function releaseProtected() { protectedJournal?.destroy(); protectedJournal = null; }
+  function syncProtectedMode() { protectedLabel.hidden = protectedHelp.hidden = !isProtected(); recoverGrant.hidden = isProtected(); }
+  function protectedContext(id, captured, epoch) {
+    releaseProtected();
+    const check = () => {
+      assertReadIdentity(captured);
+      if (!isProtected() || !protectedOptIn.checked || generation !== epoch || input.value.trim() !== id || !root.isConnected || document.visibilityState === 'hidden') throw Error('Protected coauthor context changed');
+    };
+    check();
+    const journal = createProtectedCoeditJournal({scope:{sessionId:captured.sessionId,actorId:captured.actorBinding,role:captured.role === 'creator' ? 'creator' : 'collaborator',draftId:id,token:captured.token},isCurrent:() => { try { check(); return true; } catch (_) { return false; } }});
+    protectedJournal = journal;
+    if (!journal.available()) throw Error('Encrypted recovery unavailable');
+    const locked = async fn => { check(); if (!navigator.locks) throw Error('Recovery lock unavailable'); const key = await journalKey(id,captured); check(); return navigator.locks.request('protected:'+key,async () => { check(); return fn(); }); };
+    const recoverOriginal = async expected => locked(async () => {
+      const saved = await journal.loadMetadata(); check();
+      if (!saved || (expected && ['requestId','kind','draftId','revision'].some(k => saved[k] !== expected[k]))) throw Error('Original recovery metadata changed');
+      const lookup = saved.kind === 'adopt' ? readAdoptionOperation : readOperation;
+      if (typeof lookup !== 'function') throw Error('Receipt lookup unavailable');
+      const receipt = await lookup(id,saved.requestId,captured); check();
+      // Only the current rights-aware server receipt can clear ciphertext.
+      // Missing/pending/unknown receipts never trigger a mutation or a new ID.
+      await journal.clearConfirmed(saved,receipt); check();
+      return {resolved:true,adopted:saved.kind === 'adopt',withdrawn:saved.kind === 'withdraw',projection:receipt.draft ? {draft:receipt.draft} : null};
+    });
+    return {journal,check,locked,recoverOriginal};
+  }
+  async function recoverProtected(id,captured,epoch) {
+    status.textContent = 'Checking the original protected receipt…';
+    try {
+      const context = protectedContext(id,captured,epoch);
+      const result = await context.recoverOriginal(); context.check();
+      status.textContent = result.adopted ? 'The prior adoption was confirmed. Review and approve the material separately in Studio.' : result.withdrawn ? 'The prior withdrawal was confirmed.' : 'The prior operation was confirmed. Open the current draft to review it.';
+    } catch (_) { if (generation === epoch) status.textContent = 'The prior operation remains unconfirmed or unavailable. Its encrypted recovery record was retained; nothing was resent.'; }
+  }
+  async function openProtected(id,captured,epoch) {
+    try {
+      const context = protectedContext(id,captured,epoch);
+      // Never render a decrypted proposal. All displayed text comes from a
+      // fresh authorized draft; adoption recovery can use its metadata-only GET
+      // even after adoption made the old base material version unavailable.
+      const grantsResult = await list(captured); context.check();
+      const binding = grantsResult?.grants?.find(g => g.draftId === id && g.active === true && Number.isFinite(g.expiresAt) && g.expiresAt*1000 > Date.now());
+      if (!binding || !/^[A-Za-z0-9._:-]{1,128}$/.test(binding.materialId || '') || !Number.isSafeInteger(binding.baseMaterialVersion) || binding.baseMaterialVersion < 0) throw Error('Current draft binding unavailable');
+      const projection = await read(id,captured); context.check();
+      const pending = await context.journal.loadMetadata(); context.check();
+      const scope = {sourceId:id,sessionId:captured.sessionId,actorId:captured.actorBinding,role:captured.role === 'creator' ? 'creator' : 'collaborator',revocationGeneration:captured.epoch,draftId:id};
+      const actions = {
+        readOnlyRecovery:true,newRequestId:() => crypto.randomUUID(),assertCurrent:context.check,withLock:context.locked,
+        journal:async (meta,payload) => {
+          context.check();
+          if (meta.kind === 'adopt') {
+            if (projection.capabilities?.adoptionRecovery !== 1 || captured.role !== 'creator') throw Error('Adoption recovery unavailable');
+            meta = {...meta,materialId:binding.materialId,baseMaterialVersion:binding.baseMaterialVersion};
+          }
+          await context.journal.savePending(meta,payload); context.check();
+        },
+        complete:async (expected,receipt) => {
+          context.check(); const meta = await context.journal.loadMetadata(); context.check();
+          if (!meta || meta.requestId !== expected.requestId) throw Error('Recovery record changed');
+          await context.journal.clearConfirmed(meta,receipt); context.check();
+        },
+        recover:context.recoverOriginal
+      };
+      const api = {open:async () => { context.check(); const fresh = await read(id,captured); context.check(); return fresh; }};
+      for (const kind of ['patch','approve','withdraw','adopt']) {
+        if (kind === 'adopt' && (projection.capabilities?.adoptionRecovery !== 1 || typeof readAdoptionOperation !== 'function')) continue;
+        api[kind] = async ({body}) => { context.check(); return mutate(kind,id,body,captured); };
+      }
+      editor = mountCoedit(content,{scope,pending,actions,api});
+      if (!editor.update(projection,scope,editor.getGeneration())) throw Error('Invalid draft');
+      status.textContent = 'Draft opened with encrypted recovery in this tab.';
+    } catch (_) { if (generation === epoch) { editor?.destroy(); editor = null; releaseProtected(); status.textContent = 'Draft unavailable or encrypted recovery not enabled. Pending ciphertext is retained; use Recover prior operation to check an earlier receipt.'; } }
+  }
+  async function listProtected(captured,epoch) {
+    try {
+      assertReadIdentity(captured); const result = await list(captured); assertReadIdentity(captured);
+      if (generation !== epoch || !isProtected()) return;
+      if (!Array.isArray(result?.grants)) throw Error('Invalid grant list');
+      const available = result.grants.filter(g => g?.active === true && Number.isFinite(g.expiresAt) && g.expiresAt*1000 > Date.now() && /^[A-Za-z0-9._:-]{1,128}$/.test(g.draftId || ''));
+      for (const grant of available) {
+        const choice = document.createElement('button'); choice.type = 'button'; choice.textContent = `Open draft ${grant.draftId} · segment ${grant.segmentId}`;
+        choice.addEventListener('click',() => { try { assertReadIdentity(captured); if (generation !== epoch || !isProtected()) return; input.value = grant.draftId; form.requestSubmit(); } catch (_) {} }); grants.append(choice);
+      }
+      status.textContent = available.length ? 'Choose a draft and enable encrypted recovery. Current access is checked when it opens.' : 'No active coauthor grants are available.';
+    } catch (_) { if (generation === epoch) status.textContent = 'Draft grants are unavailable.'; }
+  }
+  syncProtectedMode();
+  protectedOptIn.addEventListener('change',() => { generation++; releaseProtected(); editor?.destroy(); editor = null; status.textContent = protectedOptIn.checked ? 'Encrypted recovery enabled for this tab. Open the authorized draft or check its original receipt.' : 'Encrypted recovery disabled. Existing ciphertext was retained.'; });
+  window.addEventListener('pagehide',() => { if (isProtected()) reset(); });
+  document.addEventListener('visibilitychange',() => { if (isProtected() && document.visibilityState === 'hidden') reset(); });
+  details.addEventListener('toggle',() => { if (isProtected() && !details.open) reset(); });
   async function journalKey(id, captured) {
     const bytes = new TextEncoder().encode(JSON.stringify([captured.sessionId,captured.actorBinding,id]));
     const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)), b => b.toString(16).padStart(2,'0')).join('');
@@ -153,6 +250,7 @@ export function mountCoeditAccess(root, {identity, assertIdentity, list, revokeG
     const id = input.value.trim(), captured = identity(), epoch = ++generation;
     editor?.destroy(); editor = null;
     if (!/^[A-Za-z0-9._:-]{1,128}$/.test(id) || !captured.sessionId || !captured.token) { status.textContent = 'Enter the original draft ID and join the session.'; return; }
+    if (isProtected()) return recoverProtected(id,captured,epoch);
     status.textContent = 'Checking the prior operation…';
     try {
       assertIdentity(captured); const key = await journalKey(id, captured); assertIdentity(captured);
@@ -184,6 +282,7 @@ export function mountCoeditAccess(root, {identity, assertIdentity, list, revokeG
     const captured = identity(), epoch = ++generation;
     editor?.destroy(); editor = null; grants.replaceChildren();
     if (!captured.sessionId || !captured.token || typeof list !== 'function') { status.textContent = 'Join the session to find drafts.'; return; }
+    if (isProtected()) { releaseProtected(); return listProtected(captured,epoch); }
     status.textContent = 'Finding your drafts…';
     try {
       assertIdentity(captured);
@@ -220,12 +319,13 @@ export function mountCoeditAccess(root, {identity, assertIdentity, list, revokeG
       status.textContent = available.length ? 'Choose a draft. Current access is checked when it opens.' : 'No active coauthor grants are available.';
     } catch (_) { if (generation === epoch) { grants.replaceChildren(); status.textContent = 'Draft grants are unavailable. Try again.'; } }
   });
-  function reset() { generation++; editor?.destroy(); editor = null; input.value = ''; grants.replaceChildren(); status.textContent = ''; }
-  input.addEventListener('input', () => { generation++; editor?.destroy(); editor = null; status.textContent = ''; });
+  function reset() { generation++; releaseProtected(); editor?.destroy(); editor = null; protectedOptIn.checked = false; input.value = ''; grants.replaceChildren(); status.textContent = ''; syncProtectedMode(); }
+  input.addEventListener('input', () => { generation++; releaseProtected(); editor?.destroy(); editor = null; status.textContent = ''; });
   form.addEventListener('submit', async event => {
     event.preventDefault(); const id = input.value.trim(), captured = identity(), epoch = ++generation;
     editor?.destroy(); editor = null;
     if (!/^[A-Za-z0-9._:-]{1,128}$/.test(id) || !captured.sessionId || !captured.token) { status.textContent = 'Enter a draft ID and join the session.'; return; }
+    if (isProtected()) return openProtected(id,captured,epoch);
     status.textContent = 'Opening draft…';
     try {
       assertIdentity(captured); const projection = await read(id,captured); assertIdentity(captured);
@@ -361,7 +461,7 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
   async function recoverPrior() {
     if (!priorPending || busy || typeof actions.recover !== 'function') return;
     const epoch = generation, captured = currentScope; busy = true; render('Recovering the prior operation.');
-    try { const result = await actions.recover(priorPending); if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (!result || result.resolved !== true) { render('Prior operation remains unconfirmed.'); return; } priorPending = null; if (result.withdrawn === true) { reset('Draft withdrawn.'); return; } if (result.projection && adopt(result.projection)) render('Prior operation reconciled.'); else render('Prior operation reconciled. Refresh the draft.'); }
+    try { const result = await actions.recover(priorPending); if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (!result || result.resolved !== true) { render('Prior operation remains unconfirmed.'); return; } priorPending = null; if (result.withdrawn === true) { reset('Draft withdrawn.'); return; } if (result.adopted === true) { reset('Approved revision adopted. Review and approve the material separately in Studio.'); return; } if (result.projection && adopt(result.projection)) render('Prior operation reconciled.'); else render('Prior operation reconciled. Refresh the draft.'); }
     catch (err) { if (epoch !== generation || !same(captured,currentScope)) return; busy = false; if (err && (err.status === 401 || err.status === 403 || err.status === 404)) reset('Draft unavailable or access revoked.'); else render('Prior operation remains unconfirmed.'); }
   }
   async function mutate(kind) {
@@ -382,14 +482,14 @@ export function mountCoedit(root, {scope, api = {}, actions = {}, pending = null
     if (epoch !== generation || !same(captured,currentScope)) return;
     uncertain = operation; await send(operation, epoch, captured);
   }
-  async function replay() { if (!uncertain || busy) return; try { await actions.withLock(async () => { if (!uncertain || busy) return; busy = true; render('Reconciling the original request.'); await send(uncertain, generation, currentScope); }); } catch (_) { render('Could not acquire the recovery lock.'); } }
+  async function replay() { if (!uncertain || busy) return; if (actions.readOnlyRecovery === true) { priorPending = {kind:uncertain.kind,draftId:uncertain.draftId,requestId:uncertain.payload.requestId,revision:uncertain.payload.baseRevision ?? uncertain.payload.expectedRevision}; uncertain = null; await recoverPrior(); return; } try { await actions.withLock(async () => { if (!uncertain || busy) return; busy = true; render('Reconciling the original request.'); await send(uncertain, generation, currentScope); }); } catch (_) { render('Could not acquire the recovery lock.'); } }
   async function send(operation, epoch, captured) {
     try {
       const result = await api[operation.kind]({draftId:operation.draftId, body:operation.payload});
       if (epoch !== generation || !same(captured,currentScope)) return;
       busy = false;
       if (!result || !result.operation || !['committed','conflict'].includes(result.operation.state)) { render('Operation unconfirmed. Reconcile the same request.'); return; }
-      await actions.complete({requestId:operation.payload.requestId});
+      await actions.complete({requestId:operation.payload.requestId},result);
       if (epoch !== generation || !same(captured,currentScope)) return;
       uncertain = null;
       if (operation.kind === 'withdraw' && result.operation.state === 'committed') { reset('Draft withdrawn.'); return; }

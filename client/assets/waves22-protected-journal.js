@@ -7,7 +7,8 @@ const revision = value => Number.isSafeInteger(value) && value >= 0;
 const hex = bytes => Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2,'0')).join('');
 
 function validPending(meta, body, draftId) {
-  if (!meta || !body || !['patch','approve','withdraw'].includes(meta.kind) || meta.draftId !== draftId || !id(meta.requestId) || !revision(meta.revision) || body.requestId !== meta.requestId) return false;
+  if (!meta || !body || !['patch','approve','withdraw','adopt'].includes(meta.kind) || meta.draftId !== draftId || !id(meta.requestId) || !revision(meta.revision) || body.requestId !== meta.requestId) return false;
+  if (meta.kind === 'adopt' && (!id(meta.materialId) || !revision(meta.baseMaterialVersion))) return false;
   if (meta.kind !== 'patch') return Object.keys(body).sort().join(',') === 'expectedRevision,requestId' && body.expectedRevision === meta.revision;
   if (Object.keys(body).sort().join(',') !== 'baseRevision,operations,requestId' || body.baseRevision !== meta.revision || !Array.isArray(body.operations) || body.operations.length < 1 || body.operations.length > 2) return false;
   const fields = new Set();
@@ -17,8 +18,9 @@ function validPending(meta, body, draftId) {
 /**
  * scope: {sessionId, actorId, role, draftId, token}; token is memory only.
  * isCurrent(): true only while explicit opt-in, current verified identity AND
- * this exact view generation remain alive. Host must open the current authorized
- * draft before constructing/loading this adapter and again before display.
+ * this exact view generation remain alive. loadMetadata exposes opaque request
+ * binding only: the host must authorize the original receipt/current draft before
+ * displaying any content. load requires an already authorized current draft.
  */
 export function createProtectedCoeditJournal({scope, isCurrent, storage: suppliedStorage, cryptoProvider = globalThis.crypto} = {}) {
   const captured = scope && {...scope};
@@ -53,6 +55,7 @@ export function createProtectedCoeditJournal({scope, isCurrent, storage: supplie
   }
   async function savePending(meta, body) {
     guard(); if (!validPending(meta,body,captured.draftId)) throw Error('Invalid pending request');
+    if (meta.kind !== 'patch' && captured.role !== 'creator') throw Error('Creator access required');
     // Snapshot before any await, so a caller cannot change the encrypted request.
     const pending = JSON.parse(JSON.stringify({meta,body}));
     const name = await keyName(); guard(); if (storage.getItem(name) !== null) throw Error('Prior operation pending'); guard();
@@ -65,9 +68,14 @@ export function createProtectedCoeditJournal({scope, isCurrent, storage: supplie
   async function clearConfirmed(expected, receipt) {
     const name = await keyName(); guard(); const raw = storage.getItem(name); guard(); if (raw === null) throw Error('Recovery record missing');
     const saved = await decode(raw); guard(); const m = saved.meta, op = receipt?.operation;
-    if (!expected || expected.requestId !== m.requestId || expected.kind !== m.kind || expected.draftId !== m.draftId || expected.revision !== m.revision || !op || op.action !== m.kind || !['committed','conflict'].includes(op.state)) throw Error('Receipt mismatch');
-    if (m.kind === 'patch' ? (op.state === 'conflict' ? op.baseRevision !== m.revision : op.revision !== m.revision + 1) : (op.state !== 'committed' || op.revision !== m.revision)) throw Error('Receipt revision mismatch');
+    if (!expected || expected.requestId !== m.requestId || expected.kind !== m.kind || expected.draftId !== m.draftId || expected.revision !== m.revision || !op) throw Error('Receipt mismatch');
+    if (m.kind === 'adopt') {
+      if (captured.role !== 'creator' || op.state !== 'committed' || op.requestId !== m.requestId || op.materialId !== m.materialId || op.materialVersion !== m.baseMaterialVersion + 1) throw Error('Adoption receipt mismatch');
+    } else {
+      if (op.action !== m.kind || !['committed','conflict'].includes(op.state)) throw Error('Receipt mismatch');
+      if (m.kind === 'patch' ? (op.state === 'conflict' ? op.baseRevision !== m.revision : op.revision !== m.revision + 1) : (op.state !== 'committed' || op.revision !== m.revision)) throw Error('Receipt revision mismatch');
+    }
     guard(); if (storage.getItem(name) !== raw) throw Error('Recovery record changed'); guard(); storage.removeItem(name); guard();
   }
-  return {available:() => { try { guard(); return true; } catch { return false; } }, currentScope:() => { guard(); return {sessionId:captured.sessionId,actorId:captured.actorId,role:captured.role,draftId:captured.draftId}; }, load, savePending, clearConfirmed, destroy:() => { destroyed = true; }};
+  return {available:() => { try { guard(); return true; } catch { return false; } }, currentScope:() => { guard(); return {sessionId:captured.sessionId,actorId:captured.actorId,role:captured.role,draftId:captured.draftId}; }, load, loadMetadata:async () => { const saved = await load(); guard(); return saved ? {...saved.meta} : null; }, savePending, clearConfirmed, destroy:() => { destroyed = true; }};
 }

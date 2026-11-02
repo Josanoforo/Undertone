@@ -7,7 +7,7 @@
 
 *A private companion for every viewer — and a creator-controlled way to bring their voices on air.*
 
-[Demo video](#)<!-- TODO Jonás: URL --> · [Devpost](#)<!-- TODO Jonás: URL --> · Built with OpenAI Codex
+[Demo video](https://youtu.be/qB2JMUvLz7s) · [Devpost](https://devpost.com/software/undertone-0bljuf) · Built with OpenAI Codex
 
 </div>
 
@@ -40,7 +40,7 @@ The quiet insight: **private understanding is valuable even when the viewer neve
 
 ## See it live
 
-> 🎬 **[3-minute demo](#)<!-- TODO Jonás: URL -->** — a real Twitch player, a real approved card appearing on stream, and how we built it with Codex.
+> 🎬 **[3-minute demo](https://youtu.be/qB2JMUvLz7s)** — a real Twitch player, a real approved card appearing on stream, and how we built it with Codex.
 
 | | |
 |---|---|
